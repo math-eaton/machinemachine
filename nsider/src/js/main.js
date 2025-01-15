@@ -1,97 +1,9 @@
-// import { gsap } from "gsap";
 
+// import { wordSearch } from '/src/js/wordsearch.js';
+import { lifemachine } from "./lifeMachine.js";
 
-// function addMagnetizedEffect(targetId, repulsionRadius = 100, repulsionForce = 1, damping = 0.02) {
-//     const target = document.getElementById(targetId);
-//     if (!target) {
-//         // console.error(Element with ID "${targetId}" not found.);
-//         return;
-//     }
+lifemachine('lifeMachine1');
 
-//     target.style.position = "absolute";
-
-//     let velocity = { x: 0, y: 0 };
-//     const bounds = () => ({
-//         width: window.innerWidth,
-//         height: window.innerHeight,
-//     });
-
-//     const getCenter = () => {
-//         const rect = target.getBoundingClientRect();
-//         return {
-//             x: rect.left + rect.width / 2,
-//             y: rect.top + rect.height / 2,
-//         };
-//     };
-
-
-//     const updatePosition = () => {
-//         const left = parseFloat(target.style.left || target.offsetLeft);
-//         const top = parseFloat(target.style.top || target.offsetTop);
-
-//         // Apply velocity with damping
-//         velocity.x *= damping;
-//         velocity.y *= damping;
-
-//         const newLeft = left + velocity.x;
-//         const newTop = top + velocity.y;
-
-//         // Check for boundaries and apply bouncing
-//         const targetRect = target.getBoundingClientRect();
-//         const screenBounds = bounds();
-
-//         if (newLeft < 0 || newLeft + targetRect.width > screenBounds.width) {
-//             velocity.x *= -1; // Reverse X direction
-//         }
-//         if (newTop < 0 || newTop + targetRect.height > screenBounds.height) {
-//             velocity.y *= -1; // Reverse Y direction
-//         }
-
-//         const boundedLeft = Math.min(
-//             Math.max(0, newLeft),
-//             screenBounds.width - targetRect.width
-//         );
-//         const boundedTop = Math.min(
-//             Math.max(0, newTop),
-//             screenBounds.height - targetRect.height
-//         );
-
-//         gsap.to(target, {
-//             duration: 0.1,
-//             x: boundedLeft,
-//             y: boundedTop,
-//             overwrite: true,
-//         });
-
-//         requestAnimationFrame(updatePosition);
-//     };
-
-//     // Track mouse movement and apply force
-//     document.addEventListener("mousemove", (event) => {
-//         const cursor = { x: event.clientX, y: event.clientY };
-//         const center = getCenter();
-
-//         const dx = center.x - cursor.x;
-//         const dy = center.y - cursor.y;
-//         const distance = Math.sqrt(dx * dx + dy * dy);
-
-//         if (distance < repulsionRadius) {
-//             const repulsionX = (dx / distance) * repulsionForce * (repulsionRadius - distance);
-//             const repulsionY = (dy / distance) * repulsionForce * (repulsionRadius - distance);
-
-//             velocity.x += repulsionX;
-//             velocity.y += repulsionY;
-//         }
-//     });
-
-//     updatePosition(); // init animation loop
-// }
-
-// addMagnetizedEffect("magnetDiv", 100, 1, 0.25);
-
-
-// random jitter to divs //////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////
 function applySteppedNoiseAnimation(ids, parentId, options = {}) {
     // Default configuration
     const config = {
@@ -192,6 +104,16 @@ function applySteppedNoiseAnimation(ids, parentId, options = {}) {
     });
 }
 
+// wordSearch('p5-1', {
+//     gridResolution: 15,
+//     hiddenWords: [
+//       { word: 'MACHINE', count: 2, orientation: 'horizontal' },
+//       { word: 'MACHINE', count: 10, orientation: 'diagonal' },
+//     ],
+//     fillerChars: ' ',
+//   });
+  
+
 // Apply to elements with IDs XYZ with custom amplitude and frequency
 applySteppedNoiseAnimation(['jitter1', 'jitter2'], 'jitterBB', {
     frequency: 1, // Updates per second
@@ -200,3 +122,99 @@ applySteppedNoiseAnimation(['jitter1', 'jitter2'], 'jitterBB', {
     scaleMax: 1,
     offsetRange: 2,
 });
+
+
+// import { gsap } from "gsap";
+
+
+// function addMagnetizedEffect(targetId, repulsionRadius = 100, repulsionForce = 1, damping = 0.02) {
+//     const target = document.getElementById(targetId);
+//     if (!target) {
+//         // console.error(Element with ID "${targetId}" not found.);
+//         return;
+//     }
+
+//     target.style.position = "absolute";
+
+//     let velocity = { x: 0, y: 0 };
+//     const bounds = () => ({
+//         width: window.innerWidth,
+//         height: window.innerHeight,
+//     });
+
+//     const getCenter = () => {
+//         const rect = target.getBoundingClientRect();
+//         return {
+//             x: rect.left + rect.width / 2,
+//             y: rect.top + rect.height / 2,
+//         };
+//     };
+
+
+//     const updatePosition = () => {
+//         const left = parseFloat(target.style.left || target.offsetLeft);
+//         const top = parseFloat(target.style.top || target.offsetTop);
+
+//         // Apply velocity with damping
+//         velocity.x *= damping;
+//         velocity.y *= damping;
+
+//         const newLeft = left + velocity.x;
+//         const newTop = top + velocity.y;
+
+//         // Check for boundaries and apply bouncing
+//         const targetRect = target.getBoundingClientRect();
+//         const screenBounds = bounds();
+
+//         if (newLeft < 0 || newLeft + targetRect.width > screenBounds.width) {
+//             velocity.x *= -1; // Reverse X direction
+//         }
+//         if (newTop < 0 || newTop + targetRect.height > screenBounds.height) {
+//             velocity.y *= -1; // Reverse Y direction
+//         }
+
+//         const boundedLeft = Math.min(
+//             Math.max(0, newLeft),
+//             screenBounds.width - targetRect.width
+//         );
+//         const boundedTop = Math.min(
+//             Math.max(0, newTop),
+//             screenBounds.height - targetRect.height
+//         );
+
+//         gsap.to(target, {
+//             duration: 0.1,
+//             x: boundedLeft,
+//             y: boundedTop,
+//             overwrite: true,
+//         });
+
+//         requestAnimationFrame(updatePosition);
+//     };
+
+//     // Track mouse movement and apply force
+//     document.addEventListener("mousemove", (event) => {
+//         const cursor = { x: event.clientX, y: event.clientY };
+//         const center = getCenter();
+
+//         const dx = center.x - cursor.x;
+//         const dy = center.y - cursor.y;
+//         const distance = Math.sqrt(dx * dx + dy * dy);
+
+//         if (distance < repulsionRadius) {
+//             const repulsionX = (dx / distance) * repulsionForce * (repulsionRadius - distance);
+//             const repulsionY = (dy / distance) * repulsionForce * (repulsionRadius - distance);
+
+//             velocity.x += repulsionX;
+//             velocity.y += repulsionY;
+//         }
+//     });
+
+//     updatePosition(); // init animation loop
+// }
+
+// addMagnetizedEffect("magnetDiv", 100, 1, 0.25);
+
+
+// random jitter to divs //////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////

@@ -48,7 +48,7 @@ a:active {
 
 
 body {
-  padding: 1rem;
+  padding: 5rem;
   background-color: #137fa6e0;
   /* user-select: none; */
   cursor: url('../cursor/arrow.cur'), auto;
@@ -60,15 +60,16 @@ body {
   height: 100vh;
   overflow: hidden;
   /* height: fit-content; */
-  z-index: 999
+  z-index: 999;
 }
 
 h1 {
 
   font-size: 5.2em;
   color: rgb(255, 0, 0);
+  /* color: blue; */
   line-height: 1.1;
-  mix-blend-mode: exclusion;
+  /* mix-blend-mode: exclusion; */
   /* opacity: 0.5; */
 
 }
@@ -102,11 +103,35 @@ img{
   /* transform: scaleY(200%); */
   height: 5vh;
   max-width: 25vw;
-  top: 50vh;
-  mix-blend-mode: exclusion;
+  top: 0;
+  /* mix-blend-mode: exclusion; */
   z-index: -1;
 }
 
+#lifeMachine1 {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  /* z-index: -1;  */
+  pointer-events: none; 
+  filter: invert();
+  mix-blend-mode: darken;
+  /* mix-blend-mode: lighten; */
+  /* opacity: 0.125; */
+  z-index: 9999; 
+  image-rendering: pixelated;
+  /* scale: 300%; */
+}
+
+
+#p5-1{
+
+  height: 100vh;
+  width: auto;
+  z-index: -1;
+}
 
 .grid-container {
   display: grid;
@@ -211,4 +236,8 @@ button:focus-visible {
     overflow-y: auto;
   }
 
+}
+
+*{
+  image-rendering: pixelated;
 }

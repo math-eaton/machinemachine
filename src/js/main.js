@@ -1,6 +1,7 @@
 
 // import { wordSearch } from '/src/js/wordsearch.js';
 import { lifemachine } from "./lifeMachine.js";
+import { SpeedInsights } from "@vercel/speed-insights/next"
 
 lifemachine('lifeMachine1');
 

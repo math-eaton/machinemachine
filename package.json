@@ -1,7 +1,7 @@
 {
-  "name": "nsider",
+  "name": "machinemachine",
   "private": true,
-  "version": "0.0.0",
+  "version": "0.0.1",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -14,6 +14,7 @@
     "vite": "^6.0.5"
   },
   "dependencies": {
+    "@vercel/speed-insights": "^1.1.0",
     "gh-pages": "^6.3.0",
     "gsap": "^3.12.5",
     "p5": "^1.11.2",

@@ -8,7 +8,8 @@ const DITHERED_IMAGE_STYLE = `
 }
 `
 
-const workerPath = document.currentScript.src.replace("as-dithered-image.js", "ditherworker.js")
+// Use new URL for worker path, and load worker as module
+const workerPath = new URL('./ditherworker.js', import.meta.url)
 
 class ASDitheredImage extends HTMLElement {
     constructor() {
@@ -21,7 +22,7 @@ class ASDitheredImage extends HTMLElement {
         this.context_ = undefined
         this.image_loading_ = false
         this.ignore_next_resize_ = false
-        this.worker_ = new Worker(workerPath)
+        this.worker_ = new Worker(workerPath, { type: 'module' })
         this.cutoff_ = 0.5
         this.darkrgba_ = [0, 0, 0, 255]
         this.lightrgba_ = [255, 255, 255, 255]
@@ -308,3 +309,4 @@ class ASDitheredImage extends HTMLElement {
 }
 
 window.customElements.define('as-dithered-image', ASDitheredImage);
+export {};

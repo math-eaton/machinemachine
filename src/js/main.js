@@ -1,6 +1,7 @@
+import "./as-dithered-image.js";
 // import { wordSearch } from '/src/js/wordsearch.js';
 import { lifemachine } from "./lifeMachine.js";
-import { SpeedInsights } from "@vercel/speed-insights/next"
+// import { SpeedInsights } from "@vercel/speed-insights/next"
 
 // Global animation frequency configuration
 const ANIMATION_FREQUENCY = {

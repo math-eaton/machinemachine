@@ -9,20 +9,50 @@
   </head>
   <body>
     <div id="jitterBB">
-      <div id="jitter1">
+      <h1 id="jitter1">
         MACHINE
-      </div>
-      <div id="jitter2">
+      </h1>
+      <h1 id="jitter2">
         MACHINE
-      </div>
+      </h1>
     </div>
-    <div class="grid-container">
-      <div class="grid-item"></div>
-      <div class="grid-item" id="info">hand. is an attempt to reconnect with the original synthesis of instrument and player. Direct
-connection with change, direction, amplitude, tone - you are encouraged to sculpt your own
-relationship with your synthesizer.</div>
+      <div class="grid-container">
+      <section class="grid-item">
+              <as-dithered-image src="product_v0.jpeg" darkrgba="rgba(0, 0, 0, 255)" lightrgba="rgba(255, 255, 255, 255)" cutoff="0.25" alt="product image of the hand.R eurorack module"></as-dithered-image>
+      </section>
+      <section class="grid-item" id="intro">
+        <h2>hand. is an attempt to reconnect with the original synthesis of instrument and player. 
+          <br><br>
+          Direct connection with change, direction, amplitude, tone - you are encouraged to sculpt your own relationship with your synthesizer.</h2>
+      </section>
+      <section class="grid-item">
+        <h2>IN/OUT/MIX</h2>
+        <p>Five Inputs are attenuated and sent to five Outputs, which are summed and sent to the Mix Out. This is a normalled connection which will break when a cable is inserted into an Output jack, with the exception of the Thumb Out, which is always sent to Mix Out. This prevents the Mix Out from being useless when all outputs are patched, and is useful for the function of the Comparator outputs.</p>
+      </section>
+      <section class="grid-item">
+        <h2>GAIN & NORMALIZATION</h2>
+        <p>Mix Out has a toggle switch for gain, allowing you to select between full gain(/1), 50% gain(/2), and 20% gain(/5).</p>
+        <p>The four finger Inputs are also normalled via the Input Norm. Source toggle switch. You may select if the normalization is to +5V, or the Thumb Output. Selecting Thumb Output allows hand. to function as a multiple in addition to its other functions. The Thumb Input is always normalled to +5V when the jack is unconnected.</p>
+      </section>
+      <section class="grid-item">
+        <h2>COMPARATORS</h2>
+        <p>hand. also features five Comparator outputs. Each compares the Output of that channel to the Mix Out, and turns on an 8V gate if the channel Output voltage is higher. The Comparator outputs are highly interactive with both toggle switches and all five sliders, as changes to both inputs of the comparator circuit occur.</p>
+      </section>
+      <section class="grid-item">
+        <h2>SPECS</h2>
+        <ul>
+          <li>hand. is entirely DC coupled and will happily process both audio and control voltage.</li>
+          <li>hand. expects and outputs voltage in the range of +-10V. Comparator outputs are +8V gates.</li>
+          <li>Eurorack standard shrouded power header +/-12V</li>
+          <li>100mA on the + rail</li>
+          <li>20mA on the -</li>
+          <li>26 hp</li>
+          <li>30mm module depth with power header connected</li>
+        </ul>
+      </section>
     </div>
     <div id="lifeMachine1"></div>
     <script defer type="module" src="/src/js/main.js"></script>
+    <script src="/src/js/as-dithered-image.js"></script>
   </body>
 </html>

@@ -18,15 +18,11 @@
 @font-face {
   font-family: 'Coral Pixels';
   src: url('../fonts/CoralPixels-Regular.ttf') format('truetype');
-  font-weight: 400;
-  font-style: normal;
 }
 
 
 .coral-pixels-regular {
   font-family: "Coral Pixels", serif;
-  font-weight: 400;
-  font-style: normal;
 }
 
 
@@ -57,43 +53,33 @@ a:active {
 
 
 body {
-  padding: 5rem;
-  background-color: #dddddde0;
+  background-color: #dddddd;
   /* user-select: none; */
-  /* cursor: url('../cursor/arrow.cur'), auto; */
   background-size: cover;
   background-position: center;
   background-repeat: repeat;
   background-attachment: fixed;
-  /* font-family: "Web437_IBM_PS-55"; */
   height: 100vh;
-  overflow: hidden;
-  /* height: fit-content; */
+  /* overflow: hidden; */
   z-index: 999;
   /* mix-blend-mode: luminosity; */
 }
 
 h1 {
 
-  font-size: 5.2em;
-  color: rgb(255, 0, 0);
-  outline-offset: -0.5em;
+  font-size: 3rem;
+  filter: blur(1px);
   /* text-shadow: #888888 1vw 2.5vh 0em; */
   text-align: center;
-  /* text-decoration: underline; */
-  /* color: blue; */
-  line-height: 1.1;
-  /* filter: invert(); */
-  /* text-decoration: underline; */
-  /* mix-blend-mode: hard-light; */
-  /* mix-blend-mode: luminosity; */
-  /* opacity: 0.5; */
 
 }
 
 h2 {
-  position: absolute;
-  right: 25vh;
+  position: static;
+  right: unset;
+  margin-bottom: 0.5em;
+  font-size: 1.5rem;
+  text-align: left;
 }
 
 img{
@@ -110,29 +96,33 @@ img{
   transform: skew(-15deg);
 }
 
-#name {
 
-  font-size: 5rem;
-  padding: 5vw;
-  
-}
-
-#info{
+#intro{
   text-align: justify;
   text-justify: inter-word;
+  max-width: 33%;
   /* background-color: #1a1a1a; */
   cursor: url('../cursor/hand_machine.cur'), auto;
 }
 
+#productPhoto{
+  /* width: 100%; */
+  /* height: auto; */
+  /* max-width: 100vw;
+  max-height: 100vh; */
+  /* object-fit: cover; */
+  outline: #000000;
+  /* filter: invert(); */
+}
+
 #jitterBB {
   display: block;
-  position: relative;
+  position: absolute;
   left: 0;
-  /* width: 100%; */
-  max-width: 50vw;
-  min-height: 8em; /* Ensures enough space for scaled text */
-  margin-bottom: 2em; /* Space below for grid */
-  filter: blur(1px);
+  /* height: 5vh; */
+  max-width: 100vw;
+  min-height: 8em;
+  margin-bottom: 10em; 
   text-align: left;
 }
 
@@ -143,8 +133,7 @@ img{
   pointer-events: none;
   text-align: left;
   font-size: 3rem;
-  padding: 2rem;
-  mix-blend-mode: difference;
+  /* background-color: #dddddd; */
 }
 
 #lifeMachine1 {
@@ -153,14 +142,14 @@ img{
   left: 0;
   width: 100vw;
   height: 100vh;
-  /* z-index: -1;  */
+  z-index: -1; 
   pointer-events: none; 
   filter: none;
-  mix-blend-mode: multiply;
-  /* background-color: rgba(255,255,255,0.15);  */
-  z-index: 9999; 
+  mix-blend-mode: lighten;
+  /* z-index: 9999;  */
   image-rendering: pixelated;
   /* scale: 300%; */
+  overflow: hidden;
 }
 
 
@@ -175,7 +164,7 @@ img{
   display: grid;
   grid-template-rows: repeat(1, 1fr);
   grid-template-columns: repeat(2, 1fr);
-  gap: 10px; /* Space between grid cells */
+  gap: 2em; /* Space between grid cells */
   padding: 10px;
   height: 100%; /* Full viewport height */
   box-sizing: border-box;
@@ -183,10 +172,12 @@ img{
 
 .grid-item {
   display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1rem;
-  height: fit-content;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+  padding: 1.5em;
+  margin-bottom: 0.5em;
+  max-width: 48em;
 }
 
 .grid-item.large-horizontal {
@@ -200,7 +191,9 @@ img{
 .grid-item.large-area {
   grid-column: span 2;
   grid-row: span 2; /* Spans both rows and columns */
+  max-width: 100%;
 }
+
 #about {
   position: absolute; /* Cover the entire viewport */
   top: 0;
@@ -263,16 +256,92 @@ button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
 }
 
-@media (max-width: 768px) {
+li {
+  list-style: none;
+  position: relative;
+  padding-left: 1.5em;
+  font-size: 1rem;
+}
 
-  
+li::before {
+  content: "☞";
+  font-size: smaller;
+  position: absolute;
+  left: 0;
+}
+
+@media (max-width: 768px) {
   body {
     padding: 0.5em;
     zoom: 100%;
     font-size: large;
     overflow-y: auto;
   }
+  h1 {
+    font-size: 2rem;
+    padding: 0.5em 0;
+  }
+  h2 {
+    font-size: 1.1rem;
+    margin-bottom: 0.3em;
+  }
+  .grid-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1.2em;
+    padding: 0.5em;
+  }
+  .grid-item,
+  .grid-item.large-area {
+    max-width: 100vw;
+    width: 100%;
+    grid-column: auto !important;
+    grid-row: auto !important;
+  }
+  .grid-item {
+    padding: 0.7em;
+    font-size: 0.98rem;
+    max-width: 100vw;
+  }
+  .grid-item.large-area {
+    max-width: 100vw;
+  }
+  /* #jitter1, #jitter2 {
+    font-size: 2rem;
+    padding: 0.5em 0.2em;
+  } */
+  #intro {
+    font-size: 2.2rem;
+    padding: 1em 0.2em;
+    max-width: 100%;
+  }
+  li {
+    font-size: 0.98rem;
+  }
+}
 
+@media (max-width: 480px) {
+  h1 {
+    font-size: 1.3rem;
+  }
+  h2 {
+    font-size: 1rem;
+  }
+  .grid-item {
+    font-size: 0.92rem;
+    padding: 0.4em;
+  }
+  /* #jitter1, #jitter2 {
+    font-size: 2.2rem;
+    padding: 0.2em 0.1em;
+  } */
+  #intro {
+    font-size: 1.2rem;
+    padding: 0.5em 0.1em;
+  }
+  li {
+    font-size: 0.92rem;
+  }
 }
 
 *{
@@ -282,7 +351,5 @@ button:focus-visible {
 @media (prefers-color-scheme: dark) {
   #lifeMachine1 {
     filter: invert(1) hue-rotate(180deg);
-    mix-blend-mode: multiply;
-    background-color: rgba(0,0,0,0.15);
   }
 }

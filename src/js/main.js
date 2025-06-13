@@ -15,10 +15,11 @@ function applySteppedNoiseAnimation(ids, parentId, options = {}) {
     // Default configuration
     const config = {
         amplitude: 1,
-        stepTime: 1000, // ms between steps
+        stepTime: 1500, // ms between steps
         scaleMin: 0.9,
         scaleMax: 1,
-        offsetRatio: 0.15, // Max offset as a ratio of parent size
+        xOffsetRatio: 0.15, // Max horizontal offset as a ratio of parent size
+        yOffsetRatio: 0.25, // Max vertical offset as a ratio of parent size
         ...options,
     };
 
@@ -37,7 +38,7 @@ function applySteppedNoiseAnimation(ids, parentId, options = {}) {
     }
 
     // Shared array to track all element positions for collision avoidance
-    const sharedPositions = ids.map(() => ({ x: 0, y: 0, w: 0, h: 0, scale: 1 }));
+    let lastPositions = ids.map(() => ({ x: 0, y: 0, w: 0, h: 0, scale: 1 }));
 
     ids.forEach((id, idx) => {
         const element = document.getElementById(id);
@@ -54,23 +55,21 @@ function applySteppedNoiseAnimation(ids, parentId, options = {}) {
         const originalHeight = originalRect.height;
         element.style.transform = prevTransform;
 
-        // Initial vertical offset: each child offset by 100% of a single child's height (in rem)
-        const fontSizeRem = 3; // match your h1 font-size: 3rem
+        // Initial vertical offset: each child offset by 100% of a single child's height (in px)
+        const fontSizePx = 48; // 3rem = 48px if root font-size is 16px
         let posX = 0;
-        let posY = idx * fontSizeRem;
+        let posY = idx * fontSizePx;
         let currentScale = 1;
         let lastTimestamp = null;
-        // Use rem units for base padding as well
-        const basePaddingRem = 3;
-        const verticalOffset = idx * basePaddingRem;
+        // Use px units for base padding as well
+        const basePaddingPx = 48;
+        const verticalOffset = idx * basePaddingPx;
         // Phase offset for each child (in ms)
         const phaseOffset = (config.stepTime / ids.length) * idx;
         let phaseStarted = false;
 
-        // Track last known positions and sizes for hitbox collision
-        let lastPositions = ids.map(() => ({ x: 0, y: 0, w: originalWidth, h: originalHeight, scale: 1 }));
         // Allow up to N% overlap
-        const maxOverlap = 0; // 30% overlap allowed
+        // const maxOverlap = .1; // N% overlap allowed
 
         function isOverlapping(x1, y1, w1, h1, x2, y2, w2, h2, maxOverlap) {
             // Axis-aligned bounding box overlap
@@ -94,8 +93,8 @@ function applySteppedNoiseAnimation(ids, parentId, options = {}) {
             const elapsed = timestamp - lastTimestamp;
             if (elapsed >= config.stepTime) {
                 const parentBounds = getParentBounds();
-                const maxOffsetX = parentBounds.width * config.offsetRatio;
-                const maxOffsetY = parentBounds.height * config.offsetRatio;
+                const maxOffsetX = parentBounds.width * config.xOffsetRatio;
+                const maxOffsetY = parentBounds.height * config.yOffsetRatio;
 
                 // Random scaling
                 currentScale = Math.random() * (config.scaleMax - config.scaleMin) + config.scaleMin;
@@ -117,10 +116,10 @@ function applySteppedNoiseAnimation(ids, parentId, options = {}) {
                     newX = Math.max(0, Math.min(newX, maxPosX));
                     newY = Math.max(0, Math.min(newY, maxPosY));
                     overlapFound = false;
-                    // Lookahead: check against all other elements' last positions
-                    for (let otherIdx = 0; otherIdx < sharedPositions.length; otherIdx++) {
+                    // Check against all other elements' last positions
+                    for (let otherIdx = 0; otherIdx < lastPositions.length; otherIdx++) {
                         if (otherIdx !== idx) {
-                            const pos = sharedPositions[otherIdx];
+                            const pos = lastPositions[otherIdx];
                             if (isOverlapping(
                                 newX, newY, scaledWidth, scaledHeight,
                                 pos.x, pos.y, pos.w * pos.scale, pos.h * pos.scale,
@@ -137,14 +136,14 @@ function applySteppedNoiseAnimation(ids, parentId, options = {}) {
                 posY = newY;
                 element.style.transform = `translate(${posX}px, ${posY}px) scale(${currentScale})`;
                 // Update this element's last position for next frame
-                sharedPositions[idx] = { x: posX, y: posY, w: originalWidth, h: originalHeight, scale: currentScale };
+                lastPositions[idx] = { x: posX, y: posY, w: originalWidth, h: originalHeight, scale: currentScale };
                 lastTimestamp = timestamp;
             }
             requestAnimationFrame(animate);
         }
-        // Set initial transform for offset on page load (use rem units)
-        element.style.transform = `translate(${posX}rem, ${posY}rem) scale(1)`;
-        sharedPositions[idx] = { x: posX, y: posY, w: originalWidth, h: originalHeight, scale: 1 };
+        // Set initial transform for offset on page load (use px units)
+        element.style.transform = `translate(${posX}px, ${posY}px) scale(1)`;
+        lastPositions[idx] = { x: posX, y: posY, w: originalWidth, h: originalHeight, scale: 1 };
         requestAnimationFrame(animate);
     });
 }
@@ -247,3 +246,53 @@ applySteppedNoiseAnimation(['jitter1', 'jitter2'], 'jitterBB');
 
 // random jitter to divs //////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////
+
+// Skew only the text 'hand.' in the document by 25 degrees
+function skewHandText(root = document.body) {
+    const SKEW_CLASS = 'skew-hand';
+    const SKEW_STYLE_ID = 'skew-hand-style';
+    // Inject CSS if not already present
+    if (!document.getElementById(SKEW_STYLE_ID)) {
+        const style = document.createElement('style');
+        style.id = SKEW_STYLE_ID;
+        style.textContent = `\n.${SKEW_CLASS} {\n  display: inline-block;\n  transform: skewX(-25deg);\n}\n`;
+        document.head.appendChild(style);
+    }
+    // Helper to recursively walk nodes
+    function walk(node) {
+        if (node.nodeType === Node.TEXT_NODE) {
+            const idx = node.nodeValue.indexOf('hand.');
+            if (idx !== -1) {
+                const parent = node.parentNode;
+                const before = node.nodeValue.slice(0, idx);
+                const match = node.nodeValue.slice(idx, idx + 5);
+                const after = node.nodeValue.slice(idx + 5);
+                const frag = document.createDocumentFragment();
+                if (before) frag.appendChild(document.createTextNode(before));
+                const span = document.createElement('span');
+                span.className = SKEW_CLASS;
+                span.textContent = match;
+                frag.appendChild(span);
+                if (after) frag.appendChild(document.createTextNode(after));
+                parent.replaceChild(frag, node);
+                // Continue on the new nodes (in case of multiple 'hand.' in one node)
+                if (after.indexOf('hand.') !== -1) {
+                    walk(parent.childNodes[parent.childNodes.length - 1]);
+                }
+                return;
+            }
+        } else if (node.nodeType === Node.ELEMENT_NODE && node.childNodes) {
+            // Avoid script/style tags
+            if (['SCRIPT', 'STYLE'].includes(node.tagName)) return;
+            // Copy childNodes to array to avoid live collection issues
+            Array.from(node.childNodes).forEach(walk);
+        }
+    }
+    walk(root);
+}
+// Call after DOM is loaded
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => skewHandText());
+} else {
+    skewHandText();
+}

@@ -1,11 +1,11 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 
-export function lifemachine(containerId) {
+export function lifemachine(containerId, customSimulationSpeed = 5000) {
   let grid = [];
   let nextGrid = [];
   const word = "MACHINE";
-  let simulationSpeed = 125; // Speed of the simulation in milliseconds
+  let simulationSpeed = customSimulationSpeed; // Speed of the simulation in milliseconds
   // let currentRuleIndex = 3; // Track current rule set
   let currentRuleIndex = 1; // Track current rule set
   let generations = {}; // Track generations for decay
@@ -224,6 +224,76 @@ export function lifemachine(containerId) {
     }
   }
 
+  function resizeGrid() {
+    const newWidth = window.innerWidth;
+    const newHeight = window.innerHeight;
+    
+    // Update canvas dimensions
+    canvas.width = newWidth;
+    canvas.height = newHeight;
+    
+    // Recalculate grid dimensions
+    let resolutionFactor = 25;
+    const initialResolution = Math.min(newWidth, newHeight) / resolutionFactor;
+    const newGridWidth = Math.floor(newWidth / initialResolution);
+    const newGridHeight = Math.floor(newHeight / initialResolution);
+    const newCellWidth = newWidth / newGridWidth;
+    const newCellHeight = newHeight / newGridHeight;
+    
+    // Store old grid data
+    const oldGrid = grid;
+    const oldGenerations = generations;
+    const oldGridWidth = gridWidth;
+    const oldGridHeight = gridHeight;
+    
+    // Update grid dimensions
+    gridWidth = newGridWidth;
+    gridHeight = newGridHeight;
+    cellWidth = newCellWidth;
+    cellHeight = newCellHeight;
+    
+    // Create new grids
+    grid = [];
+    nextGrid = [];
+    generations = {};
+    
+    // Initialize new grids
+    for (let y = 0; y < gridHeight; y++) {
+      grid[y] = [];
+      nextGrid[y] = [];
+      generations[y] = [];
+      for (let x = 0; x < gridWidth; x++) {
+        grid[y][x] = null;
+        nextGrid[y][x] = null;
+        generations[y][x] = null;
+      }
+    }
+    
+    // Copy data from old grid to new grid (preserve as much as possible)
+    if (oldGrid && oldGrid.length > 0) {
+      const minHeight = Math.min(oldGridHeight, gridHeight);
+      const minWidth = Math.min(oldGridWidth, gridWidth);
+      
+      for (let y = 0; y < minHeight; y++) {
+        for (let x = 0; x < minWidth; x++) {
+          if (oldGrid[y] && oldGrid[y][x] !== undefined) {
+            grid[y][x] = oldGrid[y][x];
+            generations[y][x] = oldGenerations[y] ? oldGenerations[y][x] : null;
+          }
+        }
+      }
+    }
+    
+    // Update camera aspect ratio
+    if (camera) {
+      camera.aspect = newWidth / newHeight;
+      camera.updateProjectionMatrix();
+    }
+    
+    // Redraw the grid
+    drawGrid();
+  }
+
   function animate() {
     intervalId = setInterval(() => {
       computeNextGrid(gridWidth, gridHeight);
@@ -267,6 +337,16 @@ export function lifemachine(containerId) {
     initGrid(gridWidth, gridHeight);
     animate();
 
+    // Add resize event listener
+    let resizeTimeout;
+    window.addEventListener('resize', () => {
+      // Debounce resize events to avoid excessive recalculations
+      clearTimeout(resizeTimeout);
+      resizeTimeout = setTimeout(() => {
+        resizeGrid();
+      }, 100);
+    });
+
     // Load custom font
     const fontFace = new FontFace("Web437_IBM_PS-55_re", "url('./src/fonts/Web437_IBM_PS-55_re.woff2')");
     fontFace.load().then((loadedFace) => {
@@ -276,5 +356,31 @@ export function lifemachine(containerId) {
 
   }
 
+  function cleanup() {
+    if (intervalId) {
+      clearInterval(intervalId);
+    }
+    window.removeEventListener('resize', resizeGrid);
+  }
+
   init();
+
+  // Return an object with useful methods for external control
+  return {
+    cleanup,
+    resizeGrid,
+    getCurrentRule: () => currentRuleIndex,
+    setRule: (index) => {
+      if (index >= 0 && index < rules.length) {
+        currentRuleIndex = index;
+      }
+    },
+    setSpeed: (speed) => {
+      simulationSpeed = speed;
+      if (intervalId) {
+        clearInterval(intervalId);
+        animate();
+      }
+    }
+  };
 }

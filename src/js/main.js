@@ -1,128 +1,156 @@
-
 // import { wordSearch } from '/src/js/wordsearch.js';
 import { lifemachine } from "./lifeMachine.js";
 import { SpeedInsights } from "@vercel/speed-insights/next"
 
-lifemachine('lifeMachine1');
+// Global animation frequency configuration
+const ANIMATION_FREQUENCY = {
+    jitterStepTime: 5000,        // Time between jitter steps in milliseconds
+    lifeMachineSpeed: 4000      // Life machine simulation speed in milliseconds
+};
+
+// Initialize the life machine with responsive grid
+const lifeMachineInstance = lifemachine('lifeMachine1', ANIMATION_FREQUENCY.lifeMachineSpeed);
 
 function applySteppedNoiseAnimation(ids, parentId, options = {}) {
     // Default configuration
     const config = {
-        amplitude: 1, // Amplitude scaling factor
-        frequency: 1, // Frequency scaling factor (lower = slower changes)
-        stepTime: 500, // Time between steps in milliseconds
-        scaleMin: 0.5, // Minimum scale
-        scaleMax: 1.5, // Maximum scale
-        offsetRange: 50, // Maximum step size in pixels
+        amplitude: 1,
+        stepTime: 1000, // ms between steps
+        scaleMin: 0.9,
+        scaleMax: 1,
+        offsetRatio: 0.15, // Max offset as a ratio of parent size
         ...options,
     };
 
-    // Get parent container element
     const parent = document.getElementById(parentId);
     if (!parent) {
         console.error(`Parent container with ID "${parentId}" not found.`);
         return;
     }
 
-    // Get parent container size and position
     function getParentBounds() {
         const rect = parent.getBoundingClientRect();
         return {
             width: rect.width,
             height: rect.height,
-            left: rect.left,
-            top: rect.top,
         };
     }
 
-    ids.forEach((id) => {
+    // Shared array to track all element positions for collision avoidance
+    const sharedPositions = ids.map(() => ({ x: 0, y: 0, w: 0, h: 0, scale: 1 }));
+
+    ids.forEach((id, idx) => {
         const element = document.getElementById(id);
         if (!element) {
             console.warn(`Element with ID "${id}" not found.`);
             return;
         }
 
-        // Initialize position for the child element
-        let posX = 0; // Start position within parent
-        let posY = 0; // Start position within parent
-        let currentScale = 1; // Track the current scale of the element
+        // Get the element's original size (unscaled)
+        const prevTransform = element.style.transform;
+        element.style.transform = 'scale(1)';
+        const originalRect = element.getBoundingClientRect();
+        const originalWidth = originalRect.width;
+        const originalHeight = originalRect.height;
+        element.style.transform = prevTransform;
 
-        // Function to update the element's position and scale
-        function animate() {
-            const parentBounds = getParentBounds();
-            const elementRect = element.getBoundingClientRect();
-            const originalWidth = elementRect.width / currentScale; // Get original unscaled width
-            const originalHeight = elementRect.height / currentScale; // Get original unscaled height
+        // Initial vertical offset: each child offset by 100% of a single child's height (in rem)
+        const fontSizeRem = 3; // match your h1 font-size: 3rem
+        let posX = 0;
+        let posY = idx * fontSizeRem;
+        let currentScale = 1;
+        let lastTimestamp = null;
+        // Use rem units for base padding as well
+        const basePaddingRem = 3;
+        const verticalOffset = idx * basePaddingRem;
+        // Phase offset for each child (in ms)
+        const phaseOffset = (config.stepTime / ids.length) * idx;
+        let phaseStarted = false;
 
-            // Random scaling
-            currentScale = Math.random() * (config.scaleMax - config.scaleMin) + config.scaleMin;
-            const scaledWidth = originalWidth * currentScale;
-            const scaledHeight = originalHeight * currentScale;
+        // Track last known positions and sizes for hitbox collision
+        let lastPositions = ids.map(() => ({ x: 0, y: 0, w: originalWidth, h: originalHeight, scale: 1 }));
+        // Allow up to N% overlap
+        const maxOverlap = 0; // 30% overlap allowed
 
-            // Calculate random step sizes
-            let stepX = (Math.random() - 0.5) * 2 * config.offsetRange;
-            let stepY = (Math.random() - 0.5) * 2 * config.offsetRange;
-
-            // Predict new position
-            const newX = posX + stepX;
-            const newY = posY + stepY;
-
-            // Check boundaries and adjust steps if necessary
-            if (newX < 0) {
-                stepX = parentBounds.width - scaledWidth*.5 - posX; 
-            } else if (newX + scaledWidth > parentBounds.width) {
-                stepX = parentBounds.width - scaledWidth - posX; // Move back within right boundary
-            }
-
-            if (newY < 0) {
-                stepY = parentBounds.height - scaledHeight*.25 - posY; 
-            } else if (newY + scaledHeight > parentBounds.height) {
-                stepY = parentBounds.height - scaledHeight - posY; // Move back within bottom boundary
-            }
-
-            // Update position
-            posX += stepX;
-            posY += stepY;
-
-            // Apply transformation relative to the parent container
-            element.style.transform = `translate(${posX}px, ${posY}px) scale(${currentScale})`;
-
-            let maxTime = 5000;
-            
-            let timeValue = (config.stepTime / (Math.random)(config.frequency));
-
-            function limitMaxValue(timeValue, maxTime) {
-                return Math.min(timeValue, maxTime);
-              }
-
-            let flexTime = limitMaxValue(timeValue, maxTime)
-              
-            setTimeout(animate, flexTime);
+        function isOverlapping(x1, y1, w1, h1, x2, y2, w2, h2, maxOverlap) {
+            // Axis-aligned bounding box overlap
+            const overlapX = Math.max(0, Math.min(x1 + w1, x2 + w2) - Math.max(x1, x2));
+            const overlapY = Math.max(0, Math.min(y1 + h1, y2 + h2) - Math.max(y1, y2));
+            const overlapArea = overlapX * overlapY;
+            const minArea = Math.min(w1 * h1, w2 * h2);
+            return overlapArea > maxOverlap * minArea;
         }
 
-        // Start the animation
-        animate();
+        function animate(timestamp) {
+            if (!phaseStarted) {
+                if (timestamp < phaseOffset) {
+                    requestAnimationFrame(animate);
+                    return;
+                } else {
+                    lastTimestamp = timestamp;
+                    phaseStarted = true;
+                }
+            }
+            const elapsed = timestamp - lastTimestamp;
+            if (elapsed >= config.stepTime) {
+                const parentBounds = getParentBounds();
+                const maxOffsetX = parentBounds.width * config.offsetRatio;
+                const maxOffsetY = parentBounds.height * config.offsetRatio;
+
+                // Random scaling
+                currentScale = Math.random() * (config.scaleMax - config.scaleMin) + config.scaleMin;
+                const scaledWidth = originalWidth * currentScale;
+                const scaledHeight = originalHeight * currentScale;
+
+                // Ensure scaled element fits in parent
+                const maxPosX = Math.max(0, parentBounds.width - scaledWidth);
+                const maxPosY = Math.max(0, parentBounds.height - scaledHeight);
+
+                // Try up to 10 times to find a non-overlapping position
+                let tryCount = 0;
+                let newX, newY, overlapFound;
+                do {
+                    let stepX = (Math.random() - 0.5) * 2 * Math.min(maxOffsetX, maxPosX);
+                    let stepY = (Math.random() - 0.5) * 2 * Math.min(maxOffsetY, maxPosY);
+                    newX = posX + stepX;
+                    newY = posY + stepY + verticalOffset;
+                    newX = Math.max(0, Math.min(newX, maxPosX));
+                    newY = Math.max(0, Math.min(newY, maxPosY));
+                    overlapFound = false;
+                    // Lookahead: check against all other elements' last positions
+                    for (let otherIdx = 0; otherIdx < sharedPositions.length; otherIdx++) {
+                        if (otherIdx !== idx) {
+                            const pos = sharedPositions[otherIdx];
+                            if (isOverlapping(
+                                newX, newY, scaledWidth, scaledHeight,
+                                pos.x, pos.y, pos.w * pos.scale, pos.h * pos.scale,
+                                0.1 // allow 10% overlap
+                            )) {
+                                overlapFound = true;
+                                break;
+                            }
+                        }
+                    }
+                    tryCount++;
+                } while (overlapFound && tryCount < 15);
+                posX = newX;
+                posY = newY;
+                element.style.transform = `translate(${posX}px, ${posY}px) scale(${currentScale})`;
+                // Update this element's last position for next frame
+                sharedPositions[idx] = { x: posX, y: posY, w: originalWidth, h: originalHeight, scale: currentScale };
+                lastTimestamp = timestamp;
+            }
+            requestAnimationFrame(animate);
+        }
+        // Set initial transform for offset on page load (use rem units)
+        element.style.transform = `translate(${posX}rem, ${posY}rem) scale(1)`;
+        sharedPositions[idx] = { x: posX, y: posY, w: originalWidth, h: originalHeight, scale: 1 };
+        requestAnimationFrame(animate);
     });
 }
 
-// wordSearch('p5-1', {
-//     gridResolution: 15,
-//     hiddenWords: [
-//       { word: 'MACHINE', count: 2, orientation: 'horizontal' },
-//       { word: 'MACHINE', count: 10, orientation: 'diagonal' },
-//     ],
-//     fillerChars: ' ',
-//   });
-  
-
-// Apply to elements with IDs XYZ with custom amplitude and frequency
-applySteppedNoiseAnimation(['jitter1', 'jitter2'], 'jitterBB', {
-    frequency: 1, // Updates per second
-    stepTime: 250, // Time between steps in milliseconds
-    scaleMin: 0.5,
-    scaleMax: 1,
-    offsetRange: 2,
-});
+// Apply to elements with IDs XYZ using only the function defaults
+applySteppedNoiseAnimation(['jitter1', 'jitter2'], 'jitterBB');
 
 
 // import { gsap } from "gsap";

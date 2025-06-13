@@ -1,24 +1,32 @@
-
 :root {
-  font-family: "Web437_IBM_PS-55";
+  /* font-family: "Web437_IBM_PS-55"; */
   line-height: 1.5;
-
+  font-family: 'Coral Pixels', sans-serif;
   color-scheme: light dark;
+  color: #000000;
 
   font-synthesis: none;
   text-rendering: geometricPrecision;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  /* cursor: url('../cursor/hand.cur'), auto; */
+  cursor: url('../cursor/hand_machine_inv.cur'), auto;
+
 }
 
+
 @font-face {
-  font-family: 'Web437_IBM_PS-55';
-  src: url('/src/fonts/Web437_IBM_PS-55_re.woff') format('woff'),
-    url('/src/fonts/Web437_IBM_PS-55_re.woff') format('woff');
-    font-weight: normal;
-    font-style: normal;
-    font-display: swap;
-  
+  font-family: 'Coral Pixels';
+  src: url('../fonts/CoralPixels-Regular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+}
+
+
+.coral-pixels-regular {
+  font-family: "Coral Pixels", serif;
+  font-weight: 400;
+  font-style: normal;
 }
 
 
@@ -35,8 +43,9 @@ a:visited {
 
 a:hover {
   color: #c0c0c0;
+  cursor: url('../cursor/hand.cur'), auto;
   /* text-decoration: none; */
-  cursor: url('../cursor/point.cur'), auto;
+  /* cursor: url('../cursor/point.cur'), auto; */
 }
 
 a:active {
@@ -49,27 +58,35 @@ a:active {
 
 body {
   padding: 5rem;
-  background-color: #137fa6e0;
+  background-color: #dddddde0;
   /* user-select: none; */
-  cursor: url('../cursor/arrow.cur'), auto;
+  /* cursor: url('../cursor/arrow.cur'), auto; */
   background-size: cover;
   background-position: center;
   background-repeat: repeat;
   background-attachment: fixed;
-  font-family: "Web437_IBM_PS-55";
+  /* font-family: "Web437_IBM_PS-55"; */
   height: 100vh;
   overflow: hidden;
   /* height: fit-content; */
   z-index: 999;
+  /* mix-blend-mode: luminosity; */
 }
 
 h1 {
 
   font-size: 5.2em;
   color: rgb(255, 0, 0);
+  outline-offset: -0.5em;
+  /* text-shadow: #888888 1vw 2.5vh 0em; */
+  text-align: center;
+  /* text-decoration: underline; */
   /* color: blue; */
   line-height: 1.1;
-  /* mix-blend-mode: exclusion; */
+  /* filter: invert(); */
+  /* text-decoration: underline; */
+  /* mix-blend-mode: hard-light; */
+  /* mix-blend-mode: luminosity; */
   /* opacity: 0.5; */
 
 }
@@ -87,6 +104,12 @@ img{
   /* height: auto; */
 }
 
+.em {
+  display: inline-block;
+  font-style: normal;
+  transform: skew(-15deg);
+}
+
 #name {
 
   font-size: 5rem;
@@ -97,15 +120,31 @@ img{
 #info{
   text-align: justify;
   text-justify: inter-word;
+  /* background-color: #1a1a1a; */
+  cursor: url('../cursor/hand_machine.cur'), auto;
 }
 
-#jitterBB{
-  /* transform: scaleY(200%); */
-  height: 5vh;
-  max-width: 25vw;
-  top: 0;
-  /* mix-blend-mode: exclusion; */
-  z-index: -1;
+#jitterBB {
+  display: block;
+  position: relative;
+  left: 0;
+  /* width: 100%; */
+  max-width: 50vw;
+  min-height: 8em; /* Ensures enough space for scaled text */
+  margin-bottom: 2em; /* Space below for grid */
+  filter: blur(1px);
+  text-align: left;
+}
+
+#jitter1, #jitter2 {
+  position: fixed;
+  height: auto;
+  will-change: transform;
+  pointer-events: none;
+  text-align: left;
+  font-size: 3rem;
+  padding: 2rem;
+  mix-blend-mode: difference;
 }
 
 #lifeMachine1 {
@@ -116,10 +155,9 @@ img{
   height: 100vh;
   /* z-index: -1;  */
   pointer-events: none; 
-  filter: invert();
-  mix-blend-mode: darken;
-  /* mix-blend-mode: lighten; */
-  /* opacity: 0.125; */
+  filter: none;
+  mix-blend-mode: multiply;
+  /* background-color: rgba(255,255,255,0.15);  */
   z-index: 9999; 
   image-rendering: pixelated;
   /* scale: 300%; */
@@ -151,7 +189,6 @@ img{
   height: fit-content;
 }
 
-/* Consolidation examples */
 .grid-item.large-horizontal {
   grid-column: span 2; /* Spans 2 columns */
 }
@@ -170,7 +207,7 @@ img{
   left: 0;
   height: 100vh; /* Full viewport height */
   width: 100vw;  /* Full viewport width */
-  background-color: #137fa6e0;
+  /* background-color: #137fa6e0; */
   /* background-color: rgba(45, 45, 45, 0.756);  */
   backdrop-filter: blur(9px);
   -webkit-backdrop-filter: blur(10px);
@@ -240,4 +277,12 @@ button:focus-visible {
 
 *{
   image-rendering: pixelated;
+}
+
+@media (prefers-color-scheme: dark) {
+  #lifeMachine1 {
+    filter: invert(1) hue-rotate(180deg);
+    mix-blend-mode: multiply;
+    background-color: rgba(0,0,0,0.15);
+  }
 }

@@ -18,9 +18,9 @@
     </div>
       <div class="grid-container">
       <section class="grid-item">
-              <as-dithered-image src="product_v0.jpeg" darkrgba="rgba(0, 0, 0, 255)" lightrgba="rgba(255, 255, 255, 255)" cutoff="0.25" alt="product image of the hand.R eurorack module"></as-dithered-image>
+              <as-dithered-image id="productPhoto" src="product_v0.jpeg" crunch="auto" darkrgba="rgba(0, 0, 0, 255)" lightrgba="rgba(255, 255, 255, 255)" cutoff="0.25" alt="product image of the hand.R eurorack module"></as-dithered-image>
       </section>
-      <section class="grid-item" id="intro">
+      <section class="grid-item large-horizontal" id="intro">
         <h2>hand. is an attempt to reconnect with the original synthesis of instrument and player. 
           <br><br>
           Direct connection with change, direction, amplitude, tone - you are encouraged to sculpt your own relationship with your synthesizer.</h2>
@@ -38,7 +38,8 @@
         <h2>COMPARATORS</h2>
         <p>hand. also features five Comparator outputs. Each compares the Output of that channel to the Mix Out, and turns on an 8V gate if the channel Output voltage is higher. The Comparator outputs are highly interactive with both toggle switches and all five sliders, as changes to both inputs of the comparator circuit occur.</p>
       </section>
-      <section class="grid-item">
+      <!-- <hr> -->
+      <section class="grid-item large-vertical">
         <h2>SPECS</h2>
         <ul>
           <li>hand. is entirely DC coupled and will happily process both audio and control voltage.</li>

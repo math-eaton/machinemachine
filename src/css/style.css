@@ -36,16 +36,14 @@ a:active {
 body {
   margin: 0;
   padding: 0;
-  display: flex;
-  flex-direction: row;
-  /* width: 100vw; */
   background-color: #dddddd;
   background-size: cover;
   background-position: center;
   background-repeat: repeat;
   background-attachment: fixed;
-  z-index: 999;
-  /* mix-blend-mode: multiply; */
+  position: relative;
+  filter:saturate(2);
+  min-height: 100vh;
 }
 
 h1 {
@@ -75,6 +73,7 @@ h2 {
   font-size: 3rem;
   pointer-events: none;
   margin: 0;
+  mix-blend-mode: difference;
 }
 
 .hero-section {
@@ -82,7 +81,7 @@ h2 {
   flex-direction: row;
   align-items: flex-start;
   flex-wrap: wrap;
-  margin-top: -4rem;
+  margin-top: -2rem;
 }
 
 .product-image-wrapper {
@@ -94,13 +93,11 @@ h2 {
   justify-content: flex-start;
 }
 
-#productPhoto {
+as-dithered-image, #productPhoto {
   width: 100%;
-  max-width: 100%;
   height: auto;
   display: block;
-  object-fit: contain;
-  align-self: flex-start;
+  height: auto;
 }
 
 #intro {
@@ -117,13 +114,12 @@ h2 {
   position: fixed;
   top: 0;
   left: 0;
-  z-index: -1; 
+  min-height: 100vh;
+  z-index: -10; 
   pointer-events: none; 
   filter: none;
   mix-blend-mode: lighten;
-  /* scale: 300%; */
   image-rendering: pixelated;
-  overflow: hidden;
 }
 
 
@@ -167,6 +163,12 @@ h2 {
   .grid-item {
     padding: 0.4em;
     font-size: 0.92rem;
+  }
+
+  #lifeMachine1 {
+    position: fixed;
+    width: 100vw;
+    height: 100vh;
   }
 }
 
@@ -258,14 +260,10 @@ li::before {
   image-rendering: pixelated;
   position: absolute;
   left: -.5rem;
+  filter: saturate(100%) invert(50%) sepia(97%) saturate(1000%) hue-rotate(217deg);
 }
 
 @media (max-width: 768px) {
-  body {
-    flex-direction: column;
-    overflow-y: auto;
-  }
-
   h1 {
     font-size: 2rem;
   }
@@ -346,6 +344,6 @@ li::before {
 
 @media (prefers-color-scheme: dark) {
   #lifeMachine1 {
-    filter: invert(1) hue-rotate(180deg) blur(0.1rem);
+    filter: invert(1) hue-rotate(180deg) blur(0.05rem);
   }
 }

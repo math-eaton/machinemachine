@@ -10,6 +10,9 @@ export function lifemachine(containerId, customSimulationSpeed = 5000) {
   let currentRuleIndex = 1; // Track current rule set
   let generations = {}; // Track generations for decay
   let intervalId;
+  
+  // Shared resolution factor for consistent grid sizing
+  const RESOLUTION_FACTOR = 25; // Target cell size in pixels
 
   const rules = [
     { // Conway's Game of Life
@@ -49,6 +52,7 @@ export function lifemachine(containerId, customSimulationSpeed = 5000) {
   let scene, camera, renderer, controls, canvas, ctx;
   let gridWidth, gridHeight;
   let cellWidth, cellHeight;
+  let resizeObserver;
 
   function initGrid(gridWidth, gridHeight) {
     for (let y = 0; y < gridHeight; y++) {
@@ -209,7 +213,8 @@ export function lifemachine(containerId, customSimulationSpeed = 5000) {
 
   function drawGrid() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    ctx.font = `${Math.floor(cellHeight * 0.8)}px Web437_IBM_PS-55_re, Arial`;
+    // Use system sans-serif font with proper sizing for grid cells
+    ctx.font = `${Math.floor(cellHeight * 0.6)}px -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif`;
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
 
@@ -218,25 +223,55 @@ export function lifemachine(containerId, customSimulationSpeed = 5000) {
         const cell = grid[y][x];
         if (cell) {
           ctx.fillStyle = "black";
-          ctx.fillText(cell, x * cellWidth + cellWidth / 2, y * cellHeight + cellHeight / 2);
+          // Center each character in its cell regardless of character width
+          const centerX = x * cellWidth + cellWidth / 2;
+          const centerY = y * cellHeight + cellHeight / 2;
+          ctx.fillText(cell, centerX, centerY);
         }
       }
     }
   }
 
+  function getBodyDimensions() {
+    // For a background that covers the entire document content area
+    const body = document.body;
+    const html = document.documentElement;
+    
+    // Get the full document dimensions including scrollable content
+    const documentWidth = Math.max(
+      body.scrollWidth, body.offsetWidth,
+      html.clientWidth, html.scrollWidth, html.offsetWidth
+    );
+    
+    const documentHeight = Math.max(
+      body.scrollHeight, body.offsetHeight,
+      html.clientHeight, html.scrollHeight, html.offsetHeight
+    );
+    
+    // Ensure we always cover at least the full viewport
+    const width = Math.max(documentWidth, window.innerWidth);
+    const height = Math.max(documentHeight, window.innerHeight);
+    
+    return { width, height };
+  }
+
   function resizeGrid() {
-    const newWidth = window.innerWidth;
-    const newHeight = window.innerHeight;
+    const dimensions = getBodyDimensions();
+    const newWidth = dimensions.width;
+    const newHeight = dimensions.height;
     
     // Update canvas dimensions
     canvas.width = newWidth;
     canvas.height = newHeight;
     
-    // Recalculate grid dimensions
-    let resolutionFactor = 25;
-    const initialResolution = Math.min(newWidth, newHeight) / resolutionFactor;
-    const newGridWidth = Math.floor(newWidth / initialResolution);
-    const newGridHeight = Math.floor(newHeight / initialResolution);
+    // Recalculate grid dimensions with square cells that fill the viewport
+    const cellSize = RESOLUTION_FACTOR;
+    
+    // Calculate grid dimensions to fill entire viewport
+    const newGridWidth = Math.ceil(newWidth / cellSize);
+    const newGridHeight = Math.ceil(newHeight / cellSize);
+    
+    // Calculate actual cell sizes to fill the viewport exactly
     const newCellWidth = newWidth / newGridWidth;
     const newCellHeight = newHeight / newGridHeight;
     
@@ -303,7 +338,10 @@ export function lifemachine(containerId, customSimulationSpeed = 5000) {
 
   function init() {
     scene = new THREE.Scene();
-    camera = new THREE.PerspectiveCamera(52, window.innerWidth / window.innerHeight, 0.1, 1000);
+    
+    // Get proper dimensions for camera setup
+    const initialDimensions = getBodyDimensions();
+    camera = new THREE.PerspectiveCamera(52, initialDimensions.width / initialDimensions.height, 0.1, 1000);
     renderer = new THREE.WebGLRenderer(
     { antialias: false });
 
@@ -316,17 +354,24 @@ export function lifemachine(containerId, customSimulationSpeed = 5000) {
     // renderer.domElement.height = h*2
     
     canvas = document.createElement("canvas");
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
+    
+    // Get proper dimensions for the canvas
+    canvas.width = initialDimensions.width;
+    canvas.height = initialDimensions.height;
+    
     document.getElementById(containerId).appendChild(canvas);
     ctx = canvas.getContext("2d");
 
-    let resolutionFactor = 25;
-    const initialResolution = Math.min(window.innerWidth, window.innerHeight) / resolutionFactor;
-    gridWidth = Math.floor(window.innerWidth / initialResolution);
-    gridHeight = Math.floor(window.innerHeight / initialResolution);
-    cellWidth = window.innerWidth / gridWidth;
-    cellHeight = window.innerHeight / gridHeight;
+    let resolutionFactor = RESOLUTION_FACTOR; // Target cell size in pixels
+    const cellSize = resolutionFactor;
+    
+    // Calculate grid dimensions to fill entire viewport
+    gridWidth = Math.ceil(initialDimensions.width / cellSize);
+    gridHeight = Math.ceil(initialDimensions.height / cellSize);
+    
+    // Calculate actual cell sizes to fill the viewport exactly
+    cellWidth = initialDimensions.width / gridWidth;
+    cellHeight = initialDimensions.height / gridHeight;
 
     camera.position.z = resolutionFactor;
     controls = new OrbitControls(camera, renderer.domElement);
@@ -337,7 +382,7 @@ export function lifemachine(containerId, customSimulationSpeed = 5000) {
     initGrid(gridWidth, gridHeight);
     animate();
 
-    // Add resize event listener
+    // Add resize event listener for window changes
     let resizeTimeout;
     window.addEventListener('resize', () => {
       // Debounce resize events to avoid excessive recalculations
@@ -346,6 +391,17 @@ export function lifemachine(containerId, customSimulationSpeed = 5000) {
         resizeGrid();
       }, 100);
     });
+
+    // Add ResizeObserver to monitor document body changes
+    if (window.ResizeObserver) {
+      resizeObserver = new ResizeObserver(() => {
+        clearTimeout(resizeTimeout);
+        resizeTimeout = setTimeout(() => {
+          resizeGrid();
+        }, 100);
+      });
+      resizeObserver.observe(document.body);
+    }
 
     // Load custom font
     const fontFace = new FontFace("Web437_IBM_PS-55_re", "url('./src/fonts/Web437_IBM_PS-55_re.woff2')");
@@ -361,6 +417,9 @@ export function lifemachine(containerId, customSimulationSpeed = 5000) {
       clearInterval(intervalId);
     }
     window.removeEventListener('resize', resizeGrid);
+    if (resizeObserver) {
+      resizeObserver.disconnect();
+    }
   }
 
   init();

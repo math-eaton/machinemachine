@@ -1,6 +1,5 @@
 :root {
   font-family: 'Coral Pixels', sans-serif;
-  line-height: 1.25;
   color: #000;
   color-scheme: light dark;
 
@@ -34,6 +33,7 @@ a:active {
 }
 
 body {
+  line-height: 1.5;
   margin: 0;
   padding: 0;
   background-color: #dddddd;
@@ -85,7 +85,8 @@ h2 {
 }
 
 .product-image-wrapper {
-  flex: 1 1 50%;
+  aspect-ratio: 1 / 1; /* Force square */
+  width: 100%;
   max-width: 50%;
   display: flex;
   flex-direction: column;
@@ -97,7 +98,8 @@ as-dithered-image, #productPhoto {
   width: 100%;
   height: auto;
   display: block;
-  height: auto;
+  aspect-ratio: 1 / 1; /* Force square for dithered image */
+  object-fit: cover;
 }
 
 #intro {
@@ -129,8 +131,7 @@ as-dithered-image, #productPhoto {
   flex-direction: column;
 }
 
-.grid-container,
-.grid-container-secondary {
+.grid-container {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 2em;
@@ -141,13 +142,27 @@ as-dithered-image, #productPhoto {
   margin-right: auto;
 }
 
+
 .site-footer {
   letter-spacing: 0.01em;
   position: relative;
   z-index: 1000;
+  margin-top: 2rem;
+  margin-bottom: 0.5rem;
+  width: 100%;
+  background: none;
+  text-align: left; 
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start; 
+  justify-content: center;
 }
 .site-footer #contactEmail {
   cursor: pointer;
+  text-decoration: underline;
+  display: inline-block;
+  margin-left: 0;
+  margin-right: 0;
 }
 .site-footer #copyMessage {
   display: none;
@@ -161,75 +176,13 @@ as-dithered-image, #productPhoto {
   transition: opacity 0.3s;
 }
 
-@media (max-width: 768px) {
-  .grid-container,
-  .grid-container-secondary {
-    grid-template-columns: 1fr;
-    padding: 0 1rem 1rem 1rem;
-    gap: 1.2em;
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    max-width: 90vw;
 
-  }
-
-  .grid-item {
-    padding: 0.7em;
-    font-size: 0.98rem;
-  }
-
-
-  h1 {
-    font-size: 2rem;
-  }
-
-  h2 {
-    font-size: 1.1rem;
-  }
-
-
-  .hero-section {
-    flex-direction: column;
-    align-items: center;
-  }
-
-  .product-image-wrapper,
-  #intro {
-    flex: 1 1 100%;
-    max-width: 100%;
-    padding: 1rem 0;
-  }
-
-  #intro {
-    font-size: 1rem;
-    padding: 1rem;
-  }
-
-
-  li {
-    font-size: 0.98rem;
-  }
-
-
-
-}
-
-@media (max-width: 480px) {
-  #lifeMachine1 {
-    position: fixed;
-    width: 100vw;
-    height: 100vh;
-  }
-}
 
 .grid-item {
   padding: 0.4em;
   font-size: 0.92rem;
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
-  justify-content: flex-start;
 }
 
 .grid-item.large-horizontal {
@@ -301,6 +254,7 @@ li {
   font-size: 1rem;
   line-height: 2;
 }
+
 li::before {
   content: "";
   display: inline-block;
@@ -315,13 +269,46 @@ li::before {
   left: -.5rem;
   top: .25rem;
 
+}
+
+
+@media (max-width: 768px) {
+
+  body {
+    line-height: 2;
+  }
+
+  #lifeMachine1 {
+    position: fixed;
+    width: 100vw;
+    height: 100vh;
+  }
+
+  .grid-container {
+    grid-template-columns: 1fr;
+    padding: 0 1rem 1rem 1rem;
+    gap: 1.2em;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    max-width: 90vw;
+
+  }
+
+  .grid-item {
+    max-width: 100%;
+    padding: 0.7em;
+    font-size: 0.98rem;
+  }
+
 
   h1 {
-    font-size: 1.3rem;
+    font-size: 1.5rem;
+    text-align: right
   }
 
   h2 {
-    font-size: 1rem;
+    font-size: 1.1rem;
   }
 
   #jitter1,
@@ -329,21 +316,42 @@ li::before {
     font-size: 2rem;
   }
 
+
   .hero-section {
-    margin-top: -2rem;
+    flex-direction: column;
+    align-items: center;
   }
 
-  .grid-item {
-    padding: 0.4em;
-    font-size: 0.92rem;
+  .product-image-wrapper,
+  #intro {
+    flex: 1 1 100%;
+    max-width: 100%;
+    padding: 1rem 0;
+  }
+
+  #intro {
+    font-size: 1rem;
+    padding: 1rem;
   }
 
 
   li {
-    font-size: 0.92rem;
+    font-size: 0.98rem;
+  }
+
+  .site-footer {
+    text-align: center;
+    align-items: center;
+    padding: 0;
+  }
+
+  .site-footer #contactEmail {
+    margin-left: auto;
+    margin-right: auto;
   }
 
 }
+
 
 * {
   image-rendering: pixelated;
@@ -354,4 +362,3 @@ li::before {
     filter: invert(1) hue-rotate(180deg) blur(0.05rem);
   }
 }
-

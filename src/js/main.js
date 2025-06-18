@@ -1,11 +1,29 @@
 import "./as-dithered-image.js";
 import { lifemachine } from "./lifeMachine.js";
-import { gsap } from "gsap";
+// import { gsap } from "gsap";
 
 // Global config
-const ANIMATION_FREQUENCY = {
-  jitterStepTime: 3000, // ms between steps for stepped noise animation
+const ANIMATION_FREQUENCY_DEFAULTS = {
+  jitterStepTime: 3000,
   lifeMachineSpeed: 1250,
+  cursorUpdateFreq: 2000,
+};
+
+function randomizeFrequency(base) {
+  const variance = 0.5 * base;
+  return base + (Math.random() * 2 - 1) * variance;
+}
+
+const ANIMATION_FREQUENCY = {
+  get jitterStepTime() {
+    return randomizeFrequency(ANIMATION_FREQUENCY_DEFAULTS.jitterStepTime);
+  },
+  get lifeMachineSpeed() {
+    return randomizeFrequency(ANIMATION_FREQUENCY_DEFAULTS.lifeMachineSpeed);
+  },
+  get cursorUpdateFreq() {
+    return randomizeFrequency(ANIMATION_FREQUENCY_DEFAULTS.cursorUpdateFreq);
+  },
 };
 
 // Initialize the life machine canvas
@@ -236,3 +254,24 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   }
 });
+
+// --- Cursor mirroring animation ---
+const CURSOR_NORMAL = "src/cursor/hand.cur";
+const CURSOR_MIRRORED = "src/cursor/hand_inv.cur"; 
+
+let cursorMirrored = false;
+let cursorMirrorTimeout = null;
+
+function startCursorMirrorAnimation() {
+  if (cursorMirrorTimeout) return; // Already running
+  function swapCursorAndSchedule() {
+    cursorMirrored = !cursorMirrored;
+    document.documentElement.style.cursor = `url('${cursorMirrored ? CURSOR_MIRRORED : CURSOR_NORMAL}'), auto`;
+    const nextDelay = ANIMATION_FREQUENCY.cursorUpdateFreq;
+    cursorMirrorTimeout = setTimeout(swapCursorAndSchedule, nextDelay);
+  }
+  swapCursorAndSchedule();
+}
+
+// Start the cursor mirroring animation on page load
+startCursorMirrorAnimation();

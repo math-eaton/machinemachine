@@ -46,19 +46,13 @@ body {
   min-height: 100vh;
 }
 
-h1 {
-  font-size: 3rem;
-  text-align: center;
-}
-h2 {
-  font-size: 1.2rem;
-}
 
 #jitterBB {
   position: relative;
   width: 50%;
   max-width: 50%;
   min-height: 5rem;
+  left: 1rem;
   height: auto;
   display: block;
   z-index: 100;
@@ -79,37 +73,54 @@ h2 {
 .hero-section {
   display: flex;
   flex-direction: row;
-  align-items: flex-start;
-  flex-wrap: wrap;
-  margin-top: -2rem;
+  align-items: stretch;
+  flex-wrap: nowrap;
+  margin: 2rem 1rem 12rem 1rem;
+  max-width: 90vw;
+  width: 100%;
+  gap: 2.5rem;
+  box-sizing: border-box;
 }
 
+h1 {
+  font-size: 2.5rem;
+  text-align: right;
+  line-height: 1.2;
+}
+
+h2 {
+  font-size: 1.2rem;
+}
+
+
 .product-image-wrapper {
-  aspect-ratio: 1 / 1; /* Force square */
+  aspect-ratio: 1 / 1;
+  /* max-width: 50%; */
+  min-width: 0;
   width: 100%;
-  max-width: 50%;
   display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  justify-content: flex-start;
 }
 
 as-dithered-image, #productPhoto {
   width: 100%;
   height: auto;
   display: block;
-  aspect-ratio: 1 / 1; /* Force square for dithered image */
+  aspect-ratio: 1 / 1; 
   object-fit: cover;
 }
 
 #intro {
-  flex: 1 1 50%;
-  max-width: 25%;
+  flex: 0 1 75%;
+  max-width: 75%;
+  min-width: 0;
   font-size: 1.2rem;
   text-align: justify;
-  padding: 1em;
+  padding: 1.5em 1em 1.5em 2em;
   display: flex;
   flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  height: auto;
 }
 
 #lifeMachine1 {
@@ -304,7 +315,7 @@ li::before {
 
   h1 {
     font-size: 1.5rem;
-    text-align: right
+    text-align: right;
   }
 
   h2 {
@@ -320,18 +331,21 @@ li::before {
   .hero-section {
     flex-direction: column;
     align-items: center;
+    max-width: 98vw;
+    margin: auto;
+    padding: auto;
   }
-
   .product-image-wrapper,
   #intro {
     flex: 1 1 100%;
     max-width: 100%;
-    padding: 1rem 0;
+    min-width: 0;
+    height: auto;
+    box-sizing: border-box;
   }
-
   #intro {
-    font-size: 1rem;
-    padding: 1rem;
+    padding: 1em;
+    line-height: 1;
   }
 
 

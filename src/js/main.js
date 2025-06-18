@@ -4,7 +4,7 @@ import { gsap } from "gsap";
 
 // Global config
 const ANIMATION_FREQUENCY = {
-  jitterStepTime: 2000, // ms between steps for stepped noise animation
+  jitterStepTime: 3000, // ms between steps for stepped noise animation
   lifeMachineSpeed: 1250,
 };
 
@@ -156,7 +156,7 @@ let resizeTimeout;
 window.addEventListener("resize", () => {
   clearTimeout(resizeTimeout);
   resizeTimeout = setTimeout(() => {
-    jitterInsideBounds(['jitter1', 'jitter2'], 'jitterBB', {
+    applySteppedNoiseAnimation(['jitter1', 'jitter2'], 'jitterBB', {
       stepTime: ANIMATION_FREQUENCY.jitterStepTime,
       scaleMin: 0.92,
       scaleMax: 1.0,
@@ -210,3 +210,29 @@ if (document.readyState === 'loading') {
 } else {
   skewHandText();
 }
+
+// copy email in footer
+document.addEventListener('DOMContentLoaded', function() {
+  var emailSpan = document.getElementById('contactEmail');
+  var copyMsg = document.getElementById('copyMessage');
+  if (emailSpan && copyMsg) {
+    emailSpan.addEventListener('click', function() {
+      var email = 'machinemachineltd@gmail.com';
+      var tempTextArea = document.createElement('textarea');
+      tempTextArea.value = email;
+      document.body.appendChild(tempTextArea);
+      tempTextArea.select();
+      document.execCommand('copy');
+      document.body.removeChild(tempTextArea);
+      copyMsg.style.display = 'inline-block';
+      copyMsg.style.opacity = '1';
+      setTimeout(function() {
+        copyMsg.style.opacity = '0';
+        setTimeout(function() {
+          copyMsg.style.display = 'none';
+          copyMsg.style.opacity = '1';
+        }, 400);
+      }, 900);
+    });
+  }
+});

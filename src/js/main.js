@@ -166,15 +166,17 @@ function applySteppedNoiseAnimation(ids, parentId, options = {}) {
     });
 }
 
-// Apply to elements with IDs XYZ using only the function defaults
-applySteppedNoiseAnimation(['jitter1', 'jitter2'], 'jitterBB');
+// Initialize dynamic jitter animation
+let jitterCleanup = applyDynamicJitterAnimation('jitterBB');
 
 // Optional: debounce resize re-init
 let resizeTimeout;
 window.addEventListener("resize", () => {
   clearTimeout(resizeTimeout);
   resizeTimeout = setTimeout(() => {
-    applySteppedNoiseAnimation(['jitter1', 'jitter2'], 'jitterBB', {
+    // Cleanup existing animation and restart with new bounds
+    if (jitterCleanup) jitterCleanup();
+    jitterCleanup = applyDynamicJitterAnimation('jitterBB', {
       stepTime: ANIMATION_FREQUENCY.jitterStepTime,
       scaleMin: 0.92,
       scaleMax: 1.0,
@@ -275,3 +277,217 @@ function startCursorMirrorAnimation() {
 
 // Start the cursor mirroring animation on page load
 startCursorMirrorAnimation();
+
+// Dynamic jitter clone animation system
+function applyDynamicJitterAnimation(parentId, options = {}) {
+    // Default configuration
+    const config = {
+        amplitude: 1,
+        stepTime: ANIMATION_FREQUENCY.jitterStepTime,
+        cloneInterval: ANIMATION_FREQUENCY.jitterStepTime * 2, // 2x the step time for new clones
+        scaleMin: 0.9,
+        scaleMax: 1,
+        xOffsetRatio: 0.15,
+        yOffsetRatio: 0.25,
+        maxClones: 8, // Maximum number of clones to prevent memory issues
+        ...options,
+    };
+
+    const parent = document.getElementById(parentId);
+    if (!parent) {
+        console.error(`Parent container with ID "${parentId}" not found.`);
+        return;
+    }
+
+    // Create the template jitterChild element
+    const jitterChild = document.createElement('h1');
+    jitterChild.id = 'jitterChild';
+    jitterChild.textContent = 'MACHINE';
+    // Basic positioning styles (CSS handles the rest via #jitterBB h1 selector)
+    jitterChild.style.position = 'absolute';
+    jitterChild.style.transform = 'translate(0px, 0px) scale(1)';
+
+    // Array to track all clones and their data
+    let clones = [];
+    let cloneCounter = 0;
+
+    function getParentBounds() {
+        const rect = parent.getBoundingClientRect();
+        return {
+            width: rect.width,
+            height: rect.height,
+        };
+    }
+
+    function isOverlapping(x1, y1, w1, h1, x2, y2, w2, h2, maxOverlap = 0.1) {
+        const overlapX = Math.max(0, Math.min(x1 + w1, x2 + w2) - Math.max(x1, x2));
+        const overlapY = Math.max(0, Math.min(y1 + h1, y2 + h2) - Math.max(y1, y2));
+        const overlapArea = overlapX * overlapY;
+        const minArea = Math.min(w1 * h1, w2 * h2);
+        return overlapArea > maxOverlap * minArea;
+    }
+
+    function createClone() {
+        if (clones.length >= config.maxClones) {
+            // Remove oldest clone when at max capacity
+            const oldestClone = clones.shift();
+            if (oldestClone.element.parentNode) {
+                oldestClone.element.parentNode.removeChild(oldestClone.element);
+            }
+        }
+
+        const clone = jitterChild.cloneNode(true);
+        clone.id = `jitterClone${cloneCounter++}`;
+        parent.appendChild(clone);
+
+        // Get original dimensions
+        const tempStyle = clone.style.transform;
+        clone.style.transform = 'scale(1)';
+        const originalRect = clone.getBoundingClientRect();
+        const originalWidth = originalRect.width;
+        const originalHeight = originalRect.height;
+        clone.style.transform = tempStyle;
+
+        // Generate random initial scale within config bounds
+        const initialScale = Math.random() * (config.scaleMax - config.scaleMin) + config.scaleMin;
+        const scaledWidth = originalWidth * initialScale;
+        const scaledHeight = originalHeight * initialScale;
+
+        // Get parent bounds for random positioning
+        const parentBounds = getParentBounds();
+        
+        // Calculate maximum positions to ensure scaled element stays within bounds
+        const maxPosX = Math.max(0, parentBounds.width - scaledWidth);
+        const maxPosY = Math.max(0, parentBounds.height - scaledHeight);
+
+        // Generate random initial position within bounds
+        let initialX, initialY;
+        let tryCount = 0;
+        let overlapFound;
+
+        do {
+            initialX = Math.random() * maxPosX;
+            initialY = Math.random() * maxPosY;
+            
+            overlapFound = false;
+            // Check against all existing clones for overlap
+            for (const existingClone of clones) {
+                if (isOverlapping(
+                    initialX, initialY, scaledWidth, scaledHeight,
+                    existingClone.x, existingClone.y, 
+                    existingClone.originalWidth * existingClone.scale, 
+                    existingClone.originalHeight * existingClone.scale,
+                    0.1
+                )) {
+                    overlapFound = true;
+                    break;
+                }
+            }
+            tryCount++;
+        } while (overlapFound && tryCount < 15);
+
+        // Initialize position data with random values
+        const cloneData = {
+            element: clone,
+            x: initialX,
+            y: initialY,
+            scale: initialScale,
+            originalWidth,
+            originalHeight,
+            lastTimestamp: performance.now(),
+            index: clones.length
+        };
+
+        // Set initial transform with random position and scale
+        clone.style.transform = `translate(${cloneData.x}px, ${cloneData.y}px) scale(${cloneData.scale})`;
+
+        clones.push(cloneData);
+        return cloneData;
+    }
+
+    function animateClone(cloneData, timestamp) {
+        const elapsed = timestamp - cloneData.lastTimestamp;
+        
+        if (elapsed >= config.stepTime) {
+            const parentBounds = getParentBounds();
+            const maxOffsetX = parentBounds.width * config.xOffsetRatio;
+            const maxOffsetY = parentBounds.height * config.yOffsetRatio;
+
+            // Random scaling
+            cloneData.scale = Math.random() * (config.scaleMax - config.scaleMin) + config.scaleMin;
+            const scaledWidth = cloneData.originalWidth * cloneData.scale;
+            const scaledHeight = cloneData.originalHeight * cloneData.scale;
+
+            // Ensure scaled element fits in parent
+            const maxPosX = Math.max(0, parentBounds.width - scaledWidth);
+            const maxPosY = Math.max(0, parentBounds.height - scaledHeight);
+
+            // Try to find a non-overlapping position
+            let tryCount = 0;
+            let newX, newY, overlapFound;
+
+            do {
+                const stepX = (Math.random() - 0.5) * 2 * Math.min(maxOffsetX, maxPosX);
+                const stepY = (Math.random() - 0.5) * 2 * Math.min(maxOffsetY, maxPosY);
+                newX = cloneData.x + stepX;
+                newY = cloneData.y + stepY;
+                newX = Math.max(0, Math.min(newX, maxPosX));
+                newY = Math.max(0, Math.min(newY, maxPosY));
+
+                overlapFound = false;
+                // Check against all other clones
+                for (const otherClone of clones) {
+                    if (otherClone !== cloneData) {
+                        if (isOverlapping(
+                            newX, newY, scaledWidth, scaledHeight,
+                            otherClone.x, otherClone.y, 
+                            otherClone.originalWidth * otherClone.scale, 
+                            otherClone.originalHeight * otherClone.scale,
+                            0.1
+                        )) {
+                            overlapFound = true;
+                            break;
+                        }
+                    }
+                }
+                tryCount++;
+            } while (overlapFound && tryCount < 15);
+
+            cloneData.x = newX;
+            cloneData.y = newY;
+            cloneData.element.style.transform = `translate(${cloneData.x}px, ${cloneData.y}px) scale(${cloneData.scale})`;
+            cloneData.lastTimestamp = timestamp;
+        }
+    }
+
+    function animate(timestamp) {
+        // Animate all existing clones
+        clones.forEach(cloneData => animateClone(cloneData, timestamp));
+        requestAnimationFrame(animate);
+    }
+
+    // Create initial clone
+    createClone();
+
+    // Set up clone generation interval
+    const cloneIntervalId = setInterval(() => {
+        createClone();
+    }, config.cloneInterval);
+
+    // Start animation loop
+    requestAnimationFrame(animate);
+
+    // Return cleanup function
+    return function cleanup() {
+        clearInterval(cloneIntervalId);
+        clones.forEach(cloneData => {
+            if (cloneData.element.parentNode) {
+                cloneData.element.parentNode.removeChild(cloneData.element);
+            }
+        });
+        clones = [];
+    };
+}
+
+// Apply dynamic jitter animation to the container
+applyDynamicJitterAnimation('jitterBB');

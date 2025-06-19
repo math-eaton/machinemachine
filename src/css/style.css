@@ -35,7 +35,7 @@ a:active {
 body {
   line-height: 1.5;
   margin: 0;
-  padding: 0;
+  padding: 1rem 1rem 0 1rem;
   background-color: #dddddd;
   background-size: cover;
   background-position: center;
@@ -49,8 +49,8 @@ body {
 
 #jitterBB {
   position: relative;
-  width: 50%;
-  max-width: 50%;
+  width: 100%;
+  /* max-width: 100%; */
   min-height: 5rem;
   left: 1rem;
   margin-bottom: 1rem;
@@ -59,13 +59,12 @@ body {
   z-index: 100;
 }
 
-#jitter1,
-#jitter2 {
+#jitterBB h1 {
   position: absolute;
   white-space: nowrap;
   will-change: transform;
   transform-origin: center;
-  font-size: 3rem;
+  font-size: 2rem;
   pointer-events: none;
   margin: 0;
   mix-blend-mode: difference;
@@ -76,10 +75,11 @@ body {
   flex-direction: row;
   align-items: stretch;
   flex-wrap: nowrap;
-  margin: 1rem 1rem 12rem 1rem;
+  margin: 1rem auto 12rem auto;
   max-width: 90vw;
   width: 100%;
   box-sizing: border-box;
+  justify-content: center;
 }
 
 h1 {
@@ -94,9 +94,8 @@ h2 {
 
 .product-image-wrapper {
   aspect-ratio: 1 / 1;
-  /* max-width: 50%; */
   min-width: 0;
-  width: 100%;
+  width: 75vw;
   display: flex;
 }
 
@@ -367,9 +366,12 @@ li::before {
     font-size: 1rem;
   }
 
-  #jitter1,
-  #jitter2 {
-    font-size: 2rem;
+  #jitterBB {
+    left: 0;
+  }
+
+  #jitterBB h1 {
+    font-size: 1.5rem;
   }
 
 

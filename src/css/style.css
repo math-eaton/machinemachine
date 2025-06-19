@@ -153,7 +153,7 @@ as-dithered-image, #productPhoto {
 }
 
 
-.site-footer {
+#contact {
   letter-spacing: 0.01em;
   position: relative;
   z-index: 1000;
@@ -167,14 +167,14 @@ as-dithered-image, #productPhoto {
   align-items: flex-start; 
   justify-content: center;
 }
-.site-footer #contactEmail {
+#contact #contactEmail {
   cursor: pointer;
   text-decoration: underline;
   display: inline-block;
   margin-left: 0;
   margin-right: 0;
 }
-.site-footer #copyMessage {
+#contact #copyMessage {
   display: none;
   position: fixed;
   left: 25%;
@@ -282,6 +282,54 @@ li::before {
 }
 
 
+.footer-hands-row {
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  width: 100%;
+  margin-bottom: 0.2rem;
+  pointer-events: none;
+  position: relative;
+}
+.footer-hand-icon {
+  min-width: 1.5rem;
+  min-height: 1.5rem;
+  width: 1.5rem;
+  height: 1.5rem;
+  background-image: url('../icons/hand_down.png');
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  image-rendering: pixelated;
+  display: inline-block;
+  margin: 0 0.1rem;
+}
+
+#contact {
+  width: 100%;
+  align-items: center; /* Center footer content horizontally */
+  text-align: center;
+}
+
+.footer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 2rem;
+  margin-bottom: 0.5rem;
+}
+.footer .footer-hands-row {
+  justify-content: center;
+  width: auto;
+  margin-bottom: 0.2rem;
+}
+.footer #contact {
+  align-items: center;
+  text-align: center;
+  width: auto;
+  margin: 0;
+}
+
 @media (max-width: 768px) {
 
 
@@ -312,7 +360,7 @@ li::before {
   h1 {
     font-size: 1.5rem;
     text-align: right;
-    margin-bottom: 0;
+    margin-bottom: 1.5rem;
   }
 
   h2 {
@@ -353,25 +401,45 @@ li::before {
     font-size: 0.98rem;
   }
 
-  .site-footer {
+  #contact {
     text-align: center;
     align-items: center;
     padding: 0;
   }
 
-  .site-footer #contactEmail {
+  #contact #contactEmail {
     margin-left: auto;
     margin-right: auto;
   }
 
-  .site-footer #copyMessage {
+  #contact #copyMessage {
   left: 50%;
   top: 90%;
   font-size: 1rem;
 }
 
+.footer-hands-row {
+    width: 100vw;
+    margin-bottom: 0.1rem;
+  }
+  .footer-hands-row .footer-hand-icon {
+    width: 1.1rem;
+    height: 1.1rem;
+    margin: 0 0.05rem;
+  }
 
-
+  .footer {
+    margin-top: 1.2rem;
+    margin-bottom: 0.2rem;
+  }
+  .footer .footer-hands-row {
+    width: auto;
+    margin-bottom: 0.1rem;
+  }
+  .footer #contact {
+    width: auto;
+    margin: 0;
+  }
 }
 
 

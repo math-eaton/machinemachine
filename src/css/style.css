@@ -50,7 +50,6 @@ body {
 #jitterBB {
   position: relative;
   width: 100%;
-  /* max-width: 100%; */
   min-height: 5rem;
   left: 1rem;
   margin-bottom: 1rem;
@@ -73,7 +72,7 @@ body {
 .hero-section {
   display: flex;
   flex-direction: row;
-  align-items: stretch;
+  align-items: center;
   flex-wrap: nowrap;
   margin: 1rem auto 12rem auto;
   max-width: 90vw;
@@ -97,14 +96,18 @@ h2 {
   min-width: 0;
   width: 75vw;
   display: flex;
+  align-items: center;
+  justify-content: center;
+  align-self: flex-start; 
 }
 
 as-dithered-image, #productPhoto {
   width: 100%;
-  height: auto;
+  height: 100%;
   display: block;
-  aspect-ratio: 1 / 1; 
+  aspect-ratio: 1 / 1;
   object-fit: cover;
+  margin: 0 auto; 
 }
 
 #intro {
@@ -144,11 +147,12 @@ as-dithered-image, #productPhoto {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 2em;
-  padding: 0 2rem 2rem 2rem;
+  padding: 2rem 2rem 2rem 2rem;
   max-width: 100%;
-  /* box-sizing: border-box; */
-  margin-left: auto;
-  margin-right: auto;
+  margin: 3rem auto 0 auto;
+  clear: both;
+  position: relative;
+  z-index: 1;
 }
 
 
@@ -280,17 +284,24 @@ li::before {
 
 }
 
+#contact {
+  width: 100%;
+  align-items: center;
+  text-align: center;
+}
 
-.footer-hands-row {
+.hands-divider {
   display: flex;
   justify-content: center;
-  align-items: flex-end;
+  align-items: center;
   width: 100%;
-  margin-bottom: 0.2rem;
+  padding: 1rem 0 2rem 0;
+  margin: 1rem 0 0 0;
   pointer-events: none;
   position: relative;
 }
-.footer-hand-icon {
+
+.hands-divider .footer-hand-icon {
   min-width: 1.5rem;
   min-height: 1.5rem;
   width: 1.5rem;
@@ -304,12 +315,6 @@ li::before {
   margin: 0 0.1rem;
 }
 
-#contact {
-  width: 100%;
-  align-items: center; /* Center footer content horizontally */
-  text-align: center;
-}
-
 .footer {
   display: flex;
   flex-direction: column;
@@ -317,6 +322,30 @@ li::before {
   margin-top: 2rem;
   margin-bottom: 0.5rem;
 }
+
+.footer-hands-row {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  margin-bottom: 0.2rem;
+  pointer-events: none;
+}
+
+.footer-hands-row .footer-hand-icon {
+  min-width: 1.5rem;
+  min-height: 1.5rem;
+  width: 1.5rem;
+  height: 1.5rem;
+  background-image: url('../icons/hand_down.png');
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  image-rendering: pixelated;
+  display: inline-block;
+  margin: 0 0.1rem;
+}
+
 .footer .footer-hands-row {
   justify-content: center;
   width: auto;
@@ -329,8 +358,66 @@ li::before {
   margin: 0;
 }
 
+@media (min-width: 769px) and (max-width: 1024px) {
+  
+  .hero-section {
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2rem;
+    margin: 2rem auto 8rem auto;
+    max-width: 95vw;
+  }
+  
+  .product-image-wrapper {
+    width: 60vw;
+    max-width: 400px;
+    margin: 0 auto;
+  }
+  
+  #intro {
+    flex: none;
+    max-width: 90vw;
+    text-align: center;
+    padding: 1rem 2rem;
+  }
+  
+  #intro h1 {
+    font-size: 2rem;
+    text-align: center;
+  }
+  
+  #intro p {
+    font-size: 1.1rem;
+    line-height: 1.4;
+  }
+  
+  .hands-divider {
+    padding: 0.75rem 0 1.5rem 0;
+    margin: 0.5rem 0 0 0;
+  }
+  
+  .grid-container {
+    grid-template-columns: 1fr;
+    gap: 1.5em;
+    padding: 0 2rem 2rem 2rem;
+    max-width: 95vw;
+    margin: 2rem auto 0 auto;
+  }
+}
+
 @media (max-width: 768px) {
 
+  body {
+    padding: 0; 
+  }
+
+  #top-section {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow: visible;
+  }
 
   #lifeMachine1 {
     position: fixed;
@@ -338,64 +425,89 @@ li::before {
     height: 100vh;
   }
 
+  #jitterBB {
+    flex: 0 0 25vh; 
+    position: relative;
+    width: 100%;
+    max-height: 25vw;;
+    left: 0;
+    margin: 0;
+    display: block;
+    z-index: 100;
+  }
+
+  #jitterBB h1 {
+    font-size: 1.2rem;
+  }
+
+  .hero-section {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    padding: 1rem;
+    box-sizing: border-box;
+    max-width: 100vw;
+    margin: 0;
+    min-height: 75vh;
+  }
+  .product-image-wrapper {
+    flex: 0 0 auto;
+    width: 85vw;
+    aspect-ratio: 1 / 1;
+    padding: 0;
+    margin: 0 auto; 
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  #intro {
+    flex: 0 0 auto;
+    max-width: 95vw;
+    min-width: 0;
+    padding: 0 1rem;
+    margin: 0;
+    line-height: 1.2;
+    font-size: 0.9rem;
+    height: auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+  }
+
+  #intro h1 {
+    font-size: 1rem;
+    line-height: 1.3;
+    text-align: right;
+  }
+
+  #intro p {
+    font-size: 0.8rem;
+    line-height: 1.2;
+    margin: 0.6rem;
+    text-align: left;
+  }
+
   .grid-container {
     grid-template-columns: 1fr;
-    padding: 0 1rem 1rem 1rem;
+    padding: 1rem 1rem 1rem 1rem;
     gap: 1.2em;
     width: 100%;
     display: flex;
     flex-direction: column;
     max-width: 90vw;
-
+    margin: 1rem auto 0 auto;
+    position: relative;
+    clear: both;
   }
 
   .grid-item {
     max-width: 100%;
     padding: 0.7em;
     font-size: 0.98rem;
-  }
-
-
-  h1 {
-    font-size: 1.5rem;
-    text-align: right;
-    margin-bottom: 1.5rem;
-  }
-
-  h2 {
-    font-size: 1rem;
-  }
-
-  #jitterBB {
-    left: 0;
-  }
-
-  #jitterBB h1 {
-    font-size: 1.5rem;
-  }
-
-
-  .hero-section {
-    flex-direction: column;
-    align-items: center;
-    max-width: 95vw;
-    margin: auto;
-    padding: auto;
-  }
-  .product-image-wrapper,
-  #intro {
-    flex: 1 1 100%;
-    max-width: 100%;
-    min-width: 0;
-    padding: 0 1rem 0 1rem;
-    margin: 0;
-    line-height: 1;
-    font-size: 1rem;;
-    height: auto;
-  }
-  .product-image-wrapper {
-    padding-bottom: 0rem;
-    margin-bottom: 0rem;
   }
 
 
@@ -412,19 +524,19 @@ li::before {
   #contact #contactEmail {
     margin-left: auto;
     margin-right: auto;
-  }
-
-  #contact #copyMessage {
+  }  #contact #copyMessage {
   left: 50%;
   top: 90%;
   font-size: 1rem;
 }
 
-.footer-hands-row {
-    width: 100vw;
-    margin-bottom: 0.1rem;
+  .hands-divider {
+    flex: 0 0 auto;
+    padding: 0.5rem 0 1rem 0;
+    margin: 0.5rem 0 0 0;
   }
-  .footer-hands-row .footer-hand-icon {
+  
+  .hands-divider .footer-hand-icon {
     width: 1.1rem;
     height: 1.1rem;
     margin: 0 0.05rem;
@@ -434,16 +546,29 @@ li::before {
     margin-top: 1.2rem;
     margin-bottom: 0.2rem;
   }
+  
+  .footer-hands-row {
+    width: 100%;
+    margin-bottom: 0.1rem;
+  }
+  
+  .footer-hands-row .footer-hand-icon {
+    width: 1.1rem;
+    height: 1.1rem;
+    margin: 0 0.05rem;
+  }
+  
   .footer .footer-hands-row {
     width: auto;
     margin-bottom: 0.1rem;
   }
+  
   .footer #contact {
     width: auto;
     margin: 0;
   }
-}
 
+}
 
 * {
   image-rendering: pixelated;

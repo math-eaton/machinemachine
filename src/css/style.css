@@ -301,12 +301,26 @@ li::before {
   position: relative;
 }
 
-.hands-divider .footer-hand-icon {
+.down-hand-icon {
   min-width: 1.5rem;
   min-height: 1.5rem;
   width: 1.5rem;
   height: 1.5rem;
   background-image: url('../icons/hand_down.png');
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  image-rendering: pixelated;
+  display: inline-block;
+  margin: 0 0.1rem;
+}
+
+.up-hand-icon {
+  min-width: 1.5rem;
+  min-height: 1.5rem;
+  width: 1.5rem;
+  height: 1.5rem;
+  background-image: url('../icons/hand_up.png');
   background-size: contain;
   background-repeat: no-repeat;
   background-position: center;
@@ -328,7 +342,7 @@ li::before {
   justify-content: center;
   align-items: center;
   width: 100%;
-  margin-bottom: 0.2rem;
+  margin-top: 0.5rem;
   pointer-events: none;
 }
 
@@ -337,7 +351,7 @@ li::before {
   min-height: 1.5rem;
   width: 1.5rem;
   height: 1.5rem;
-  background-image: url('../icons/hand_down.png');
+  background-image: url('../icons/hand_up.png');
   background-size: contain;
   background-repeat: no-repeat;
   background-position: center;
@@ -349,7 +363,7 @@ li::before {
 .footer .footer-hands-row {
   justify-content: center;
   width: auto;
-  margin-bottom: 0.2rem;
+  margin-top: 0.5rem;
 }
 .footer #contact {
   align-items: center;
@@ -535,11 +549,29 @@ li::before {
     padding: 0.5rem 0 1rem 0;
     margin: 0.5rem 0 0 0;
   }
-  
-  .hands-divider .footer-hand-icon {
+
+  .down-hand-icon {
     width: 1.1rem;
     height: 1.1rem;
     margin: 0 0.05rem;
+    background-image: url('../icons/hand_down.png');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    image-rendering: pixelated;
+    display: inline-block;
+  }
+
+  .up-hand-icon {
+    width: 1.1rem;
+    height: 1.1rem;
+    margin: 0 0.05rem;
+    background-image: url('../icons/hand_up.png');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    image-rendering: pixelated;
+    display: inline-block;
   }
 
   .footer {
@@ -549,18 +581,19 @@ li::before {
   
   .footer-hands-row {
     width: 100%;
-    margin-bottom: 0.1rem;
+    margin-top: 0.3rem;
   }
   
   .footer-hands-row .footer-hand-icon {
     width: 1.1rem;
     height: 1.1rem;
     margin: 0 0.05rem;
+    background-image: url('../icons/hand_up.png');
   }
   
   .footer .footer-hands-row {
     width: auto;
-    margin-bottom: 0.1rem;
+    margin-top: 0.3rem;
   }
   
   .footer #contact {

@@ -295,7 +295,7 @@ li::before {
   justify-content: center;
   align-items: center;
   width: 100%;
-  padding: 1rem 0 2rem 0;
+  padding: 2rem 0 2rem 0;
   margin: 1rem 0 0 0;
   pointer-events: none;
   position: relative;
@@ -406,10 +406,6 @@ li::before {
     line-height: 1.4;
   }
   
-  .hands-divider {
-    padding: 0.75rem 0 1.5rem 0;
-    margin: 0.5rem 0 0 0;
-  }
   
   .grid-container {
     grid-template-columns: 1fr;
@@ -469,9 +465,8 @@ li::before {
   }
   .product-image-wrapper {
     flex: 0 0 auto;
-    width: 85vw;
+    width: 90vw;
     aspect-ratio: 1 / 1;
-    padding: 0;
     margin: 0 auto; 
     display: flex;
     align-items: center;
@@ -545,10 +540,10 @@ li::before {
 }
 
   .hands-divider {
-    flex: 0 0 auto;
-    padding: 0.5rem 0 1rem 0;
+    padding: 0.75rem 0 1.5rem 0;
     margin: 0.5rem 0 0 0;
   }
+
 
   .down-hand-icon {
     width: 1.1rem;

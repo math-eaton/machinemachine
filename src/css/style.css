@@ -52,7 +52,7 @@ body {
   width: 100%;
   min-height: 5rem;
   left: 1rem;
-  margin-bottom: 1rem;
+  margin-bottom: 5rem;
   height: auto;
   display: block;
   z-index: 100;
@@ -94,7 +94,7 @@ h2 {
 .product-image-wrapper {
   aspect-ratio: 1 / 1;
   min-width: 0;
-  width: 75vw;
+  width: 50vw;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -147,7 +147,7 @@ as-dithered-image, #productPhoto {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 2em;
-  padding: 2rem 2rem 2rem 2rem;
+  padding: 2rem 2rem 0rem 2rem;
   max-width: 100%;
   margin: 3rem auto 0 auto;
   clear: both;
@@ -384,7 +384,7 @@ li::before {
   }
   
   .product-image-wrapper {
-    width: 60vw;
+    width: 50vw;
     max-width: 400px;
     margin: 0 auto;
   }

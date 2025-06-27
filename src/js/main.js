@@ -7,6 +7,7 @@ const ANIMATION_FREQUENCY_DEFAULTS = {
   jitterStepTime: 3000,
   lifeMachineSpeed: 1250,
   cursorUpdateFreq: 2000,
+  cloneGenFreq: 6000,
 };
 
 function randomizeFrequency(base) {
@@ -23,6 +24,9 @@ const ANIMATION_FREQUENCY = {
   },
   get cursorUpdateFreq() {
     return randomizeFrequency(ANIMATION_FREQUENCY_DEFAULTS.cursorUpdateFreq);
+  },
+  get cloneGenFreq() {
+    return randomizeFrequency(ANIMATION_FREQUENCY_DEFAULTS.cloneGenFreq);
   },
 };
 
@@ -109,7 +113,9 @@ function applySteppedNoiseAnimation(ids, parentId, options = {}) {
                 }
             }
             const elapsed = timestamp - lastTimestamp;
-            if (elapsed >= config.stepTime) {
+            // Get fresh random timing for each step - brownian motion effect
+            const currentStepTime = ANIMATION_FREQUENCY.jitterStepTime;
+            if (elapsed >= currentStepTime) {
                 const parentBounds = getParentBounds();
                 const maxOffsetX = parentBounds.width * config.xOffsetRatio;
                 const maxOffsetY = parentBounds.height * config.yOffsetRatio;
@@ -284,12 +290,12 @@ function applyDynamicJitterAnimation(parentId, options = {}) {
     const config = {
         amplitude: 1,
         stepTime: ANIMATION_FREQUENCY.jitterStepTime,
-        cloneInterval: ANIMATION_FREQUENCY.jitterStepTime * 2, // 2x the step time for new clones
+        cloneInterval: ANIMATION_FREQUENCY.cloneGenFreq,
         scaleMin: 0.9,
         scaleMax: 1,
         xOffsetRatio: 0.15,
         yOffsetRatio: 0.25,
-        maxClones: 8, // Maximum number of clones to prevent memory issues
+        maxClones: 2, // Maximum number of clones to prevent memory issues
         ...options,
     };
 
@@ -408,7 +414,9 @@ function applyDynamicJitterAnimation(parentId, options = {}) {
     function animateClone(cloneData, timestamp) {
         const elapsed = timestamp - cloneData.lastTimestamp;
         
-        if (elapsed >= config.stepTime) {
+        // Get fresh random timing for each step - brownian motion effect
+        const currentStepTime = ANIMATION_FREQUENCY.jitterStepTime;
+        if (elapsed >= currentStepTime) {
             const parentBounds = getParentBounds();
             const maxOffsetX = parentBounds.width * config.xOffsetRatio;
             const maxOffsetY = parentBounds.height * config.yOffsetRatio;
@@ -469,17 +477,25 @@ function applyDynamicJitterAnimation(parentId, options = {}) {
     // Create initial clone
     createClone();
 
-    // Set up clone generation interval
-    const cloneIntervalId = setInterval(() => {
-        createClone();
-    }, config.cloneInterval);
+    // Set up clone generation interval with dynamic timing
+    let cloneTimeoutId = null;
+    function scheduleNextClone() {
+        const nextInterval = ANIMATION_FREQUENCY.cloneGenFreq;
+        cloneTimeoutId = setTimeout(() => {
+            createClone();
+            scheduleNextClone(); // Schedule the next one with fresh random timing
+        }, nextInterval);
+    }
+    
+    // Start the clone generation cycle
+    scheduleNextClone();
 
     // Start animation loop
     requestAnimationFrame(animate);
 
     // Return cleanup function
     return function cleanup() {
-        clearInterval(cloneIntervalId);
+        if (cloneTimeoutId) clearTimeout(cloneTimeoutId);
         clones.forEach(cloneData => {
             if (cloneData.element.parentNode) {
                 cloneData.element.parentNode.removeChild(cloneData.element);

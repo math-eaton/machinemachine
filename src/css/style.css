@@ -602,6 +602,12 @@ li::before {
   image-rendering: pixelated;
 }
 
+@media (prefers-color-scheme: light) {
+  #lifeMachine1 {
+    filter: invert(1) hue-rotate(180deg) blur(0.05rem);
+  }
+}
+
 @media (prefers-color-scheme: dark) {
   #lifeMachine1 {
     filter: invert(1) hue-rotate(180deg) blur(0.05rem);

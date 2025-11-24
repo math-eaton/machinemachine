@@ -33,6 +33,77 @@ const ANIMATION_FREQUENCY = {
 // Initialize the life machine canvas
 const lifeMachineInstance = lifemachine('lifeMachine1', ANIMATION_FREQUENCY.lifeMachineSpeed);
 
+// Function to swap product images with preloading
+function swapProductImages() {
+  const container = document.querySelector('.product-image-wrapper');
+  const productPhotoR = document.getElementById('productPhoto');
+  if (!container || !productPhotoR) return;
+  
+  // Make container relative for absolute positioning
+  container.style.position = 'relative';
+  
+  // Clone the existing element for the L version
+  const productPhotoL = productPhotoR.cloneNode(true);
+  productPhotoL.id = 'productPhotoL';
+  productPhotoL.setAttribute('src', 'product_L_v1.jpg');
+  
+  // Style both images for stacking - keep them in document flow size
+  productPhotoR.style.cssText = `
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    transition: opacity 0s;
+    opacity: 1;
+    margin: 0;
+  `;
+  
+  productPhotoL.style.cssText = `
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    transition: opacity 0s;
+    opacity: 0;
+    pointer-events: none;
+    margin: 0;
+  `;
+  
+  // Insert L image into container
+  container.appendChild(productPhotoL);
+  
+  // Track which is visible
+  let showingR = true;
+  
+  // Wait for L image to load and process
+  setTimeout(() => {
+    // Swap every 5 seconds using opacity for instant switching
+    setInterval(() => {
+      if (showingR) {
+        productPhotoR.style.opacity = '0';
+        productPhotoR.style.pointerEvents = 'none';
+        productPhotoL.style.opacity = '1';
+        productPhotoL.style.pointerEvents = 'auto';
+      } else {
+        productPhotoL.style.opacity = '0';
+        productPhotoL.style.pointerEvents = 'none';
+        productPhotoR.style.opacity = '1';
+        productPhotoR.style.pointerEvents = 'auto';
+      }
+      showingR = !showingR;
+    }, 5000);
+  }, 500);
+}
+
+// Initialize image swapping when DOM is ready
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', swapProductImages);
+} else {
+  swapProductImages();
+}
+
 function applySteppedNoiseAnimation(ids, parentId, options = {}) {
     // Default configuration
     const config = {

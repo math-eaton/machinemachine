@@ -45,7 +45,9 @@ function swapProductImages() {
   // Clone the existing element for the L version
   const productPhotoL = productPhotoR.cloneNode(true);
   productPhotoL.id = 'productPhotoL';
-  productPhotoL.setAttribute('src', 'product_L_v1.jpg');
+  productPhotoL.setAttribute('loading', 'lazy');
+  // productPhotoL.setAttribute('crunch', '1');
+  productPhotoL.setAttribute('cutoff', '0.5');
   
   // Style both images for stacking - keep them in document flow size
   productPhotoR.style.cssText = `
@@ -71,11 +73,14 @@ function swapProductImages() {
     margin: 0;
   `;
   
-  // Insert L image into container
-  container.appendChild(productPhotoL);
-  
   // Track which is visible
   let showingR = true;
+  
+  // Defer L image insertion to not compete with R processing
+  setTimeout(() => {
+    productPhotoL.setAttribute('src', 'product_L_v1_opt.jpg');
+    container.appendChild(productPhotoL);
+  }, 100);
   
   // Wait for L image to load and process
   setTimeout(() => {
